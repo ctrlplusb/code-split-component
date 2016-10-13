@@ -15,19 +15,20 @@ _Check out the orignal artwork [here](https://github.com/threepointone/react-mod
 ## TOCs
 
  - [About](https://github.com/ctrlplusb/code-split-component#about)
+ - [Dependencies](https://github.com/ctrlplusb/code-split-component#dependencies)
  - [Installation](https://github.com/ctrlplusb/code-split-component#installation)
  - [Using](https://github.com/ctrlplusb/code-split-component#using)
- - [Example](https://github.com/ctrlplusb/code-split-component#example)
+ - [Examples](https://github.com/ctrlplusb/code-split-component#examples)
  - [Caveats / FAQs](https://github.com/ctrlplusb/code-split-component#caveats-faqs)
 
+
+## About
+
+This library consists of a React Component and a Babel 6 plugin that allows you to declaratively define code split module import points within your React application.
 
 ## Dependencies
 
 Your project needs to be using React, Webpack 2 and Babel 6.
-
-## About
-
-This library consists of a React Component and a Babel 6 plugin that allows you to easily define Webpack 2 code split points within your application.
 
 ## Installation
 
@@ -43,7 +44,7 @@ First you need to add the babel plugin.
 }
 ```
 
-Then use the `CodeSplitComponent` within your application to load one of your components.  This component will automatically be used as a code split point. 
+Then use the `CodeSplitComponent` within your application to load one of your components.  This component will automatically be used as a code split point.
 
 To do this you have to provide a string literal to the `path` prop of the `CodeSplitComponent`.  This must be a relative path to the component that you are trying to load and have code splitting occur on. NOTE: You can't pass a variable/function etc to resolve the `path` with - it has to be a string literal.
 
@@ -61,31 +62,32 @@ import CodeSplitComponent from 'code-split-component'
 
 ## Examples
 
-### Fully featured
+### Built in Example
 
-This lib was built for use within the [react-universally](https://github.com/ctrlplusb/react-universally) starter kit. This starter kit provides you with a minimal configuration to get going with a server side rendering React application. 
+There is a React Router 4 based example in the `/example` folder.
 
-I haven't completed the integration of `code-split-component` into the starter kit yet, however, you can preview the current usage within the [`next`](https://github.com/ctrlplusb/react-universally/tree/next) branch.
+Clone this repo and then run the following commands:
 
-### Code split React Router 4 routes
-
-You can quite easily split on your react router routes by doing the following:
-
-```js
-import { Match } from 'react-router';
-import CodeSplitComponent from 'code-split-component';
-
-<Match
-  pattern="/foo"
-  render={() =>
-    <CodeSplitComponent path="./Foo">
-      { Foo => (Foo ? <Foo /> : <div>Loading...</div>) }
-    </CodeSplitComponent>
-  }
-/>
+```
+npm install
+npm run example:prod
 ```
 
-Pretty simple. :)
+That will run a production build of the code contained within the example folder.  The production build includes the code splitting feature.
+
+For development mode of the example you can run the following command:
+
+```
+npm run example:dev
+```
+
+Note: in development mode we override the code-split-component babel plugin configuration to disable code splitting.  This is so that we can have a full featured React Hot Loader implementation. It's a seamless transition.
+
+### Universal / Isomorphic Example
+
+This lib was built for use within the [react-universally](https://github.com/ctrlplusb/react-universally) starter kit. This starter kit provides you with a minimal configuration to get going with a server side rendering React application.
+
+I haven't completed the integration of `code-split-component` into the starter kit yet, however, you can preview the current usage within the [`next`](https://github.com/ctrlplusb/react-universally/tree/next) branch.
 
 ## Caveats / FAQs
 
@@ -109,4 +111,3 @@ e.g.
 ```
 
 Remember you need to have set your `NODE_ENV` environment variable to either "development" or "production" for the above to work.
-
