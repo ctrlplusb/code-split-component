@@ -12,40 +12,40 @@ const template = require('babel-template');
 // -----------------------------------------------------------------------------
 // PRIVATES
 
-const CODE_SPLIT_COMPONENT_NAME = 'CodeSplitComponent';
+const CODE_SPLIT_COMPONENT_NAME = 'CodeSplit';
 
-const MISSING_PROP = 'A CodeSplitComponent must have either a "modules" prop or a "module" prop assigned';
+const MISSING_PROP = 'A "CodeSplit" component must have either a "modules" prop or a "module" prop assigned';
 
 const INVALID_MODULE_PROP_VALUE = `
-You must supply a single require statement containing a string literal to the "module" property of the "CodeSplitComponent".
+You must supply a single require statement containing a string literal to the "module" property of the "CodeSplit".
 
 For example:
 
-  <CodeSplitComponent module={require('./Foo')}>
+  <CodeSplit module={require('./Foo')}>
     {
       Foo => Foo
         ? <Foo />
         : <span>Loading..</span>
     }
-  </CodeSplitComponentLoader>`;
+  </CodeSplit>`;
 
 const INVALID_MODULES_PROP_VALUE = `
-You must supply an array containing at least one require statement within to the "modules" prop of the "CodeSplitComponent".  Each require statement within the array must have string literal value.
+You must supply an array containing at least one require statement within to the "modules" prop of the "CodeSplit" component.  Each require statement within the array must have string literal value.
 
 For example:
 
-  <CodeSplitComponent modules={[require('./Foo'), require('./Bar')]}>
+  <CodeSplit modules={[require('./Foo'), require('./Bar')]}>
     {
       [Foo, Bar] => Foo && Bar
         ? <div><Foo /><Bar /></div>
         : <span>Loading..</span>
     }
-  </CodeSplitComponentLoader>`;
+  </CodeSplit>`;
 
 const err = error => `
 
-ERROR IN CodeSplitComponent BABEL PLUGIN TRANSPILATION ATTEMPT
---------------------------------------------------------------
+ERROR IN code-split-component BABEL PLUGIN TRANSPILATION ATTEMPT
+----------------------------------------------------------------
 ${error}
 
 `;

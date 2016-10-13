@@ -9,7 +9,7 @@
 
 import { Component, PropTypes } from 'react';
 
-const MISSING_PROP = 'You must supply at least a "module" or a "modules" prop to the "CodeSplitComponent".';
+const MISSING_PROP = 'You must supply at least a "module" or a "modules" prop to the "CodeSplit" component.';
 
 function es6Safe(module) {
   return module.default
@@ -17,7 +17,7 @@ function es6Safe(module) {
     : module;
 }
 
-class CodeSplitComponent extends Component {
+class CodeSplit extends Component {
   constructor(props) {
     super(props);
 
@@ -65,7 +65,7 @@ class CodeSplitComponent extends Component {
   }
 }
 
-CodeSplitComponent.propTypes = {
+CodeSplit.propTypes = {
   module: PropTypes.any,
   modules: PropTypes.any,
   moduleCount: PropTypes.number,
@@ -74,4 +74,4 @@ CodeSplitComponent.propTypes = {
   codeSplit: PropTypes.bool,
 };
 
-export default CodeSplitComponent;
+export default CodeSplit;

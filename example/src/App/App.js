@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Match, Link } from 'react-router';
-import CodeSplitComponent from '../../../src/index';
+import CodeSplit from '../../../src/index';
 
 function App() {
   return (
@@ -16,18 +16,18 @@ function App() {
             exactly
             pattern="/"
             render={() =>
-              <CodeSplitComponent module={require('./Home')}>
+              <CodeSplit module={require('./Home')}>
                 { Home => (Home ? <Home /> : <div>Loading...</div>) }
-              </CodeSplitComponent>
+              </CodeSplit>
             }
           />
 
           <Match
             pattern="/about"
             render={() =>
-              <CodeSplitComponent module={require('./About')}>
+              <CodeSplit module={require('./About')}>
                 { About => (About ? <About /> : <div>Loading...</div>) }
-              </CodeSplitComponent>
+              </CodeSplit>
             }
           />
         </div>
