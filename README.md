@@ -44,13 +44,13 @@ First you need to add the babel plugin.
 }
 ```
 
-Then use the `CodeSplitComponent` within your application to load a module.  This module will automatically be used as a code split point.
+Then use the `CodeSplit` component within your application to load module(s).  This module(s) will automatically be used as a code split point by your Webpack 2 bundling process.
 
-To do this you can must provide either a "module" or "modules" prop to the `CodeSplitComponent`. The "module" prop must have a `require('./Foo')` value, whilst the "modules" prop must have an array of `require` statements.  
+You must provide either a "module" or "modules" prop to the `CodeSplit` component. The "module" prop must contain a `require` statement with a string literal (e.g. `require('./Foo')`), whilst the "modules" prop must have an array of `require` statements each with a string literal value.  
 
-___NOTE:___ The paths contained within the `require` statements MUST be string literals.
+___NOTE:___ The paths contained within the `require` statements MUST be string literals. You can't pass a variable or a function that resolves to a variable to the require statements as Webpack needs string literals in order to do correct module analysis/resolving for the code splitting procedure to work.
 
-In addition to the `module`/`modules` prop you need to define a callback `function` as a child to the `CodeSplitComponent`.  This `function` will receive a single argument and should return whatever you would like to be rendered (or null if not).  
+In addition to the `module`/`modules` prop you need to define a callback `function` as a child to the `CodeSplit` component.  This `function` will receive a single argument and should return whatever you would like to be rendered (or null if not).  
 
 If you used the `module` prop the argument to the callback will be your module.  If the module hasn't been fetched from the server yet it will be null.
 
@@ -61,21 +61,21 @@ __NOTE:__ We provide an array initialized with null values as this makes destruc
 __"module" example:__
 
 ```jsx
-import CodeSplitComponent from 'code-split-component'
+import CodeSplit from 'code-split-component'
 
-<CodeSplitComponent module={require('../Foo')}>
+<CodeSplit module={require('../Foo')}>
   { Foo => (Foo ? <Foo /> : <div>Loading...</div>) }
-</CodeSplitComponent>
+</CodeSplit>
 ```
 
 __"modules" example:__
 
 ```jsx
-import CodeSplitComponent from 'code-split-component'
+import CodeSplit from 'code-split-component'
 
-<CodeSplitComponent modules={[require('./Foo'), require('./Bar')]}>
+<CodeSplit modules={[require('./Foo'), require('./Bar')]}>
   { ([Foo, Bar]) => (Foo && Bar ? <div><Foo /><Bar /></div> : <div>Loading...</div>) }
-</CodeSplitComponent>
+</CodeSplit>
 ```
 
 ## Examples
