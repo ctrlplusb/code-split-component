@@ -2,6 +2,16 @@
 
 A React Component and a Babel 6 plugin to support code splitting in Webpack 2 powered projects.
 
+```jsx
+
+import CodeSplit from 'code-split-component'
+
+<CodeSplit module={require('../Foo')}>
+  { Foo => (Foo ? <Foo /> : <div>Loading...</div>) }
+</CodeSplit>
+```
+
+
 ---
 
 ___Confession___
