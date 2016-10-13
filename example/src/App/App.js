@@ -16,7 +16,7 @@ function App() {
             exactly
             pattern="/"
             render={() =>
-              <CodeSplitComponent path="./Home">
+              <CodeSplitComponent module={require('./Home')}>
                 { Home => (Home ? <Home /> : <div>Loading...</div>) }
               </CodeSplitComponent>
             }
@@ -25,7 +25,7 @@ function App() {
           <Match
             pattern="/about"
             render={() =>
-              <CodeSplitComponent path="./About">
+              <CodeSplitComponent module={require('./About')}>
                 { About => (About ? <About /> : <div>Loading...</div>) }
               </CodeSplitComponent>
             }

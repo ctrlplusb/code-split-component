@@ -14,7 +14,7 @@ function removeEmpty(x) {
 module.exports = function configFactory() {
   const ifDev = ifElse(process.env.NODE_ENV === 'development');
 
-  const config = {
+  return {
     entry: {
       app: removeEmpty([
         ifDev('react-hot-loader/patch'),
@@ -62,8 +62,4 @@ module.exports = function configFactory() {
       ],
     },
   };
-
-  console.log(JSON.stringify(config, null, 4));
-
-  return config;
 };

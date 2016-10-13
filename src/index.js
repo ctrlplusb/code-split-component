@@ -9,16 +9,7 @@
 
 import { Component, PropTypes } from 'react';
 
-const BABEL_PLUGIN_REQUIRED_MESSAGE = `You must use the CodeSplitComponent with it\'s babel plugin.
-
-For e.g.
-  { "plugins": ["code-split-component/babel"] }
-
-If you don't want to disable the code splitting feature without removing the CodeSplitComponent from your source then you can set the "noCodeSplitting" option for the babel plugin to \`true\`.
-
-For e.g.
-  { "plugins": [["code-split-component/babel", { "noCodeSplitting": true }]] }
-`;
+const MISSING_PROP = 'You must supply at least a "module" or a "modules" prop to the "CodeSplitComponent".';
 
 function es6Safe(module) {
   return module.default
@@ -30,37 +21,57 @@ class CodeSplitComponent extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    const { module, modules, moduleCount } = this.props;
+
+    if (!module && !modules) {
+      throw new Error(MISSING_PROP);
+    }
+
+    const modulesLength = modules
+      ? moduleCount || modules.length
+      : 0;
+
+    this.state = {
+      result: module
+        ? null
+        : Array.from({ length: modulesLength }, () => null),
+    };
   }
 
   componentWillMount() {
-    const { path, noCodeSplitting, onError } = this.props;
+    const { module, modules, codeSplit, onError } = this.props;
 
-    if (typeof path === 'string') {
-      throw new Error(BABEL_PLUGIN_REQUIRED_MESSAGE);
-    }
-
-    if (noCodeSplitting) {
-      // We have a require expression result.
-      this.state = { component: es6Safe(path) };
-    } else {
-      // We have a System.import promise.
-      path
-        .then(component => this.setState({ component: es6Safe(component) }))
+    if (codeSplit) {
+      // We have a System.import single promise or a Promise.all result.
+      (module || modules)
+        .then(result => this.setState({
+          result: module
+            ? es6Safe(result)
+            : result.map(es6Safe),
+        }))
         .catch(err => (onError ? onError(err) : console.log(err)));
+    } else {
+      // We will are receiving results for regular "require" expressions.
+      this.setState({
+        result: module
+          ? es6Safe(module)
+          : modules.map(es6Safe),
+      });
     }
   }
 
   render() {
-    return this.props.children(this.state.component);
+    return this.props.children(this.state.result);
   }
 }
 
 CodeSplitComponent.propTypes = {
-  path: PropTypes.any.isRequired,
+  module: PropTypes.any,
+  modules: PropTypes.any,
+  moduleCount: PropTypes.number,
   onError: PropTypes.func,
   children: PropTypes.func.isRequired,
-  noCodeSplitting: PropTypes.bool,
+  codeSplit: PropTypes.bool,
 };
 
 export default CodeSplitComponent;
