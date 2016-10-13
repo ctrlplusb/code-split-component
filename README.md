@@ -1,4 +1,4 @@
-# ✂️ code-split-component ✂️
+# ✂️ code-split-component
 
 A React Component and a Babel 6 plugin to support code splitting in Webpack 2 powered projects.
 
