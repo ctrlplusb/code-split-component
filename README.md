@@ -8,7 +8,7 @@ ___Confession___
 
 _This work has been completely ripped off from Sunil Pai's (@threepointone) original work. I highly recommend you go see his work before adopting this.  The main differences of this lib compared to his is that this lib is built to target Webpack 2, and is much much much simpler (i.e. severely lacking in features).  I built it to meet a specific use case for my [universal starter kit](https://github.com/ctrlplusb/react-universally)._
 
-_Check out the orignal artwork [here](https://github.com/threepointone/react-modules)._
+_Check out the original artwork [here](https://github.com/threepointone/react-modules)._
 
 ---
 
@@ -44,19 +44,37 @@ First you need to add the babel plugin.
 }
 ```
 
-Then use the `CodeSplitComponent` within your application to load one of your components.  This component will automatically be used as a code split point.
+Then use the `CodeSplitComponent` within your application to load a module.  This module will automatically be used as a code split point.
 
-To do this you have to provide a string literal to the `path` prop of the `CodeSplitComponent`.  This must be a relative path to the component that you are trying to load and have code splitting occur on. NOTE: You can't pass a variable/function etc to resolve the `path` with - it has to be a string literal.
+To do this you can must provide either a "module" or "modules" prop to the `CodeSplitComponent`. The "module" prop must have a `require('./Foo')` value, whilst the "modules" prop must have an array of `require` statements.  
 
-In addition to the `path` prop you need to define a `function` as a child to the `CodeSplitComponent`.  This `function` will receive a single argument, which will be your component.  If the argument is `null` then your component bundle hasn't been fetched from the server yet.
+___NOTE:___ The paths contained within the `require` statements MUST be string literals.
 
-Here is an example:
+In addition to the `module`/`modules` prop you need to define a callback `function` as a child to the `CodeSplitComponent`.  This `function` will receive a single argument and should return whatever you would like to be rendered (or null if not).  
+
+If you used the `module` prop the argument to the callback will be your module.  If the module hasn't been fetched from the server yet it will be null.
+
+If you used the `modules` prop then you will get an array that will be the same length as the arguments you provided to the `modules` prop.  If the modules haven't been fetched from the server yet then each position within the array will contain nulls.  Once all the modules have been fetched the array will contain the resolved modules and they will be in the same array index as specified within the `modules` prop.
+
+__NOTE:__ We provide an array initialized with null values as this makes destructuring far easier to use against it, without having the need to do empty array checks.  See the examples.
+
+__"module" example:__
 
 ```jsx
 import CodeSplitComponent from 'code-split-component'
 
-<CodeSplitComponent path="../FooComponent">
-  { FooComponent => (FooComponent ? <FooComponent /> : <div>Loading...</div>) }
+<CodeSplitComponent module={require('../Foo')}>
+  { Foo => (Foo ? <Foo /> : <div>Loading...</div>) }
+</CodeSplitComponent>
+```
+
+__"modules" example:__
+
+```jsx
+import CodeSplitComponent from 'code-split-component'
+
+<CodeSplitComponent modules={[require('./Foo'), require('./Bar')]}>
+  { ([Foo, Bar]) => (Foo && Bar ? <div><Foo /><Bar /></div> : <div>Loading...</div>) }
 </CodeSplitComponent>
 ```
 

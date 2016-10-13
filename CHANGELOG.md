@@ -2,6 +2,39 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.4] - 2016-10-13
+
+### Breaking Changes
+
+The "path" prop has been replaced with two new props: "module" and "modules".
+
+The "module" prop requires you to provide a single require('./Foo') statement, whilst the "modules" prop requires you to provide an array containing require statements.  
+
+In the case of "modules" you will receive an array as the value to the callback function you provide as a child to the CodeSplitComponent. Additionally the array result in the callback will contain null values until the modules are fetched from server.  This allows you to do array based destructuring without having to do empty array checks first.
+
+"module" example:
+
+  <Match
+    pattern="/about"
+    render={() =>
+      <CodeSplitComponent module={require('./About')}>
+        { About => (About ? <About /> : <div>Loading...</div>) }
+      </CodeSplitComponent>
+    }
+  />
+
+"modules" example:
+
+  <Match
+    exactly
+    pattern="/"
+    render={() =>
+      <CodeSplitComponent modules={[require('./Home'), require('./About')]}>
+        { ([Home, About]) => (Home && About ? <Home /> : <div>Loading...</div>) }
+      </CodeSplitComponent>
+    }
+  />
+
 ## [0.0.3] - 2016-10-12
 
 ### Changed
