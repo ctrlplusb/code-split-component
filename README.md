@@ -31,6 +31,7 @@ There are a few crucial differences between this library and his:
  - [Installation](https://github.com/ctrlplusb/code-split-component#installation)
  - [Usage](https://github.com/ctrlplusb/code-split-component#usage)
  - [Example](https://github.com/ctrlplusb/code-split-component#example)
+ - [Combining with React Router 4](https://github.com/ctrlplusb/code-split-component#combining-with-react-router-4)
  - [Server Side Rendering (SSR) Support](https://github.com/ctrlplusb/code-split-component#server-side-rendering-ssr-support)
 
 
@@ -84,8 +85,6 @@ import CodeSplit from 'code-split-component'
 
 ## Example
 
-### Built in Example
-
 There is a React Router 4 based example in the `/example` folder.
 
 The example includes hot module reloading backed by React Hot Loader v3.
@@ -96,6 +95,23 @@ Clone this repo and then run the following commands:
 npm install
 npm run example
 ```
+
+## Combining with React Router 4
+
+You can easily combine React Router 4's declaritive API with this one to get code split routes:
+
+```jsx
+<Match
+  pattern="/about"
+  render={() =>
+    <CodeSplit module={System.import('./About')}>
+      { About => (About ? <About /> : <div>Loading...</div>) }
+    </CodeSplit>
+  }
+/>
+```
+
+Zing! 
 
 ## Server Side Rendering (SSR) Support
 
