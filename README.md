@@ -19,7 +19,7 @@ This idea for this library has been completely inspired (ripped off) from Sunil 
 
 There are a few crucial differences between this library and his:
 
-  - This library expects code splitting as the default behavior (i.e. use of the `System.import` Webpack 2 API), and uses the included Babel plugin to transpile `System.imports` on the `CodeSplit` component instances into standard `require` statements (which is useful when doing server side rendering). `react-modules` is kind of inverse to this. It expects you to use the standard `require` API and then transpiles it into Webpack's code splitting API.
+  - This library expects code splitting as the default behavior (i.e. use of the `System.import` Webpack 2 API) - it only requires use of the Babel plugin when you want to support server side rendering. `react-modules` is kind of inverse to this. It expects you to use the standard `require` API and then transpiles them to use Webpack's code splitting API.
   - This library only supports Webpack 2, where `react-modules` probably supports both versions (unconfirmed).
   - `react-modules` has way more features.
 
