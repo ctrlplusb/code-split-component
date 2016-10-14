@@ -103,9 +103,9 @@ You can easily combine React Router 4's declaritive API with this one to get cod
 ```jsx
 <Match
   pattern="/about"
-  render={routeProps =>
+  render={routerProps =>
     <CodeSplit module={System.import('./About')}>
-      { About => (About ? <About {...routeProps} /> : <div>Loading...</div>) }
+      { About => (About ? <About {...routerProps} /> : <div>Loading...</div>) }
     </CodeSplit>
   }
 />
