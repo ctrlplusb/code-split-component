@@ -9,8 +9,7 @@
   "scripts": {
     "build": "babel src -d lib --presets latest,react",
     "prepublish": "npm run build",
-    "example:prod": "rimraf ./example/build && NODE_ENV=production webpack --config ./example/webpack.config.js && node ./example/server.js",
-    "example:dev": "NODE_ENV=development node ./example/devServer.js"
+    "example": "node ./example/devServer.js"
   },
   "files": [
     "lib",
