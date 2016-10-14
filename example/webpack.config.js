@@ -50,13 +50,6 @@ module.exports = function configFactory() {
               'react',
               ['latest', { modules: false }],
             ],
-            plugins: removeEmpty([
-              ifDev('react-hot-loader/babel'),
-              [
-                path.resolve(__dirname, '../src/babel'),
-                { noCodeSplitting: process.env.NODE_ENV === 'development' },
-              ],
-            ]),
           },
         },
       ],

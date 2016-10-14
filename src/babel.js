@@ -1,12 +1,6 @@
 /* eslint-disable new-cap */
 /* eslint-disable-line no-param-reassign */
 
-// This has been completely stolen from @threepointone's amazing original
-// implementation which can be found here:
-// https://github.com/threepointone/react-modules
-// Go look at his implementation! It is far more featureful.
-// All props go to Sunil! Love love love.
-
 const template = require('babel-template');
 
 // -----------------------------------------------------------------------------
@@ -17,11 +11,11 @@ const CODE_SPLIT_COMPONENT_NAME = 'CodeSplit';
 const MISSING_PROP = 'A "CodeSplit" component must have either a "modules" prop or a "module" prop assigned';
 
 const INVALID_MODULE_PROP_VALUE = `
-You must supply a single require statement containing a string literal to the "module" property of the "CodeSplit".
+You must supply a single "System.import" statement containing a string literal to the "module" property of the "CodeSplit" component.
 
 For example:
 
-  <CodeSplit module={require('./Foo')}>
+  <CodeSplit module={System.import('./Foo')}>
     {
       Foo => Foo
         ? <Foo />
@@ -30,11 +24,11 @@ For example:
   </CodeSplit>`;
 
 const INVALID_MODULES_PROP_VALUE = `
-You must supply an array containing at least one require statement within to the "modules" prop of the "CodeSplit" component.  Each require statement within the array must have string literal value.
+You must supply an array containing at least one "System.import" statement within to the "modules" prop of the "CodeSplit" component.  Each "System.import" statement within the array must contain a string literal value.
 
 For example:
 
-  <CodeSplit modules={[require('./Foo'), require('./Bar')]}>
+  <CodeSplit modules={[System.import('./Foo'), System.import('./Bar')]}>
     {
       [Foo, Bar] => Foo && Bar
         ? <div><Foo /><Bar /></div>
@@ -50,9 +44,7 @@ ${error}
 
 `;
 
-const SYSTEM_IMPORT = template('System.import(SOURCE)');
-const PROMISE_ALL = template('Promise.all(SOURCE)');
-
+const REQUIRE = template('require(SOURCE)');
 const TRUE = template('true');
 
 const isValidPropType = element =>
@@ -62,12 +54,15 @@ const isValidPropType = element =>
 
 const isValidElement = element =>
   element.type === 'CallExpression'
-  && element.callee
-  && element.callee.type === 'Identifier'
-  && element.callee.name === 'require'
-  && element.arguments
-  && element.arguments.length > 0
-  && element.arguments[0].type === 'StringLiteral';
+    && element.callee
+    && element.callee.type === 'MemberExpression'
+    && element.callee.object
+    && element.callee.object.name === 'System'
+    && element.callee.property
+    && element.callee.property.name === 'import'
+    && element.arguments
+    && element.arguments.length > 0
+    && element.arguments[0].type === 'StringLiteral';
 
 const isInvalidElement = element => !isValidElement(element);
 
@@ -83,7 +78,7 @@ function codeSplitComponentPlugin({ types: t }) {
   return {
     visitor: {
       JSXElement(path, state) {
-        if (state.opts.noCodeSplitting) {
+        if (state.opts.enableCodeSplitting) {
           return;
         }
 
@@ -108,7 +103,7 @@ function codeSplitComponentPlugin({ types: t }) {
             }
 
             const modulePath = expression.arguments[0].value;
-            const newExpression = SYSTEM_IMPORT({
+            const newExpression = REQUIRE({
               SOURCE: t.stringLiteral(modulePath),
             }).expression;
 
@@ -127,12 +122,10 @@ function codeSplitComponentPlugin({ types: t }) {
 
             const vals = requireStatements.map((moduleRequire) => {
               const modulePath = moduleRequire.arguments[0].value;
-              return SYSTEM_IMPORT({ SOURCE: t.stringLiteral(modulePath) }).expression;
+              return REQUIRE({ SOURCE: t.stringLiteral(modulePath) }).expression;
             });
 
-            const newExpression = PROMISE_ALL({
-              SOURCE: t.arrayExpression(vals),
-            }).expression;
+            const newExpression = t.arrayExpression(vals);
 
             modulesProp.value = t.jSXExpressionContainer(newExpression);
 
@@ -145,10 +138,10 @@ function codeSplitComponentPlugin({ types: t }) {
             );
           }
 
-          // Adds a noCodeSplitting={true|false} prop to the code split component.
+          // Adds a transpiled={true|false} prop to the code split component.
           path.node.openingElement.attributes.push(
             t.jSXAttribute(
-              t.jSXIdentifier('codeSplit'),
+              t.jSXIdentifier('transpiled'),
               t.jSXExpressionContainer(TRUE().expression)
             )
           );

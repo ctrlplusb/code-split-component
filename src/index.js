@@ -1,12 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable react/forbid-prop-types */
 
-// This has been completely stolen from @threepointone's amazing original
-// implementation which can be found here:
-// https://github.com/threepointone/react-modules
-// Go look at his implementation! It is far more featureful.
-// All props go to Sunil! Love love love.
-
 import { Component, PropTypes } from 'react';
 
 const MISSING_PROP = 'You must supply at least a "module" or a "modules" prop to the "CodeSplit" component.';
@@ -39,9 +33,16 @@ class CodeSplit extends Component {
   }
 
   componentWillMount() {
-    const { module, modules, codeSplit, onError } = this.props;
+    const { module, modules, transpiled, onError } = this.props;
 
-    if (codeSplit) {
+    if (transpiled) {
+      // We will are receiving results for regular "require" expressions.
+      this.setState({
+        result: module
+          ? es6Safe(module)
+          : modules.map(es6Safe),
+      });
+    } else {
       // We have a System.import single promise or a Promise.all result.
       (module || modules)
         .then(result => this.setState({
@@ -50,13 +51,6 @@ class CodeSplit extends Component {
             : result.map(es6Safe),
         }))
         .catch(err => (onError ? onError(err) : console.log(err)));
-    } else {
-      // We will are receiving results for regular "require" expressions.
-      this.setState({
-        result: module
-          ? es6Safe(module)
-          : modules.map(es6Safe),
-      });
     }
   }
 
@@ -71,7 +65,7 @@ CodeSplit.propTypes = {
   moduleCount: PropTypes.number,
   onError: PropTypes.func,
   children: PropTypes.func.isRequired,
-  codeSplit: PropTypes.bool,
+  transpiled: PropTypes.bool,
 };
 
 export default CodeSplit;

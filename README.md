@@ -1,44 +1,44 @@
 # ✂️ code-split-component
 
-A React Component and a Babel 6 plugin to support code splitting in Webpack 2 powered projects.
+Declarative code splitting for your Wepback 2 bundled React projects, with SSR support.
 
 ```jsx
 
 import CodeSplit from 'code-split-component'
 
-<CodeSplit module={require('../Foo')}>
+<CodeSplit module={System.import('../Foo')}>
   { Foo => (Foo ? <Foo /> : <div>Loading...</div>) }
 </CodeSplit>
 ```
-
 
 ---
 
 ___Confession___
 
-_This work has been completely ripped off from Sunil Pai's (@threepointone) original work. I highly recommend you go see his work before adopting this.  The main differences of this lib compared to his is that this lib is built to target Webpack 2, and is much much much simpler (i.e. severely lacking in features).  I built it to meet a specific use case for my [universal starter kit](https://github.com/ctrlplusb/react-universally)._
+_This idea for this library has been completely inspired (ripped off) from Sunil Pai's original work. I highly recommend you go check it out: [`react-modules`](https://github.com/threepointone/react-modules) 
 
-_Check out the original artwork [here](https://github.com/threepointone/react-modules)._
+There are a few crucial differences between this library and his:
+
+  - This library expects code splitting as the default behavior (i.e. use of the `System.import` Webpack 2 API), and uses the included Babel plugin to transpile `System.imports` on the `CodeSplit` component instances into standard `require` statements (which is useful when doing server side rendering). `react-modules` is kind of inverse to this. It expects you to use the standard `require` API and then transpiles it into Webpack's code splitting API.
+  - This library only supports Webpack 2, where `react-modules` probably supports both versions (unconfirmed).
+  - `react-modules` has way more features.
 
 ---
 
 ## TOCs
 
  - [About](https://github.com/ctrlplusb/code-split-component#about)
- - [Dependencies](https://github.com/ctrlplusb/code-split-component#dependencies)
  - [Installation](https://github.com/ctrlplusb/code-split-component#installation)
- - [Using](https://github.com/ctrlplusb/code-split-component#using)
- - [Examples](https://github.com/ctrlplusb/code-split-component#examples)
- - [Caveats / FAQs](https://github.com/ctrlplusb/code-split-component#caveats-faqs)
+ - [Usage](https://github.com/ctrlplusb/code-split-component#usage)
+ - [Example](https://github.com/ctrlplusb/code-split-component#example)
+ - [Server Side Rendering (SSR) Support](https://github.com/ctrlplusb/code-split-component#server-side-rendering-ssr-support)
 
 
 ## About
 
-This library consists of a React Component and a Babel 6 plugin that allows you to declaratively define code split module import points within your React application.
+This library consists of a React component allowing you to declaratively use Webpack 2's code splitting feature within your projects.
 
-## Dependencies
-
-Your project needs to be using React, Webpack 2 and Babel 6.
+In addition to the component it also ships with a Babel 6 plugin that will allow you to use the component in a server side rendering context.
 
 ## Installation
 
@@ -46,23 +46,17 @@ Your project needs to be using React, Webpack 2 and Babel 6.
 
 ## Usage
 
-First you need to add the babel plugin.
+Firstly import the component.
 
-```
-{
-  "plugins": ["code-split-component/babel"]
-}
+```js
+import CodeSplit from 'code-split-component';
 ```
 
-Then use the `CodeSplit` component within your application to load module(s).  This module(s) will automatically be used as a code split point by your Webpack 2 bundling process.
+When using the component you must provide either a "module" or "modules" prop to it. The "module" prop must contain a single `System.import` (e.g. `System.import('./Foo')`), whilst the "modules" prop accepts an array of them.  
 
-You must provide either a "module" or "modules" prop to the `CodeSplit` component. The "module" prop must contain a `require` statement with a string literal (e.g. `require('./Foo')`), whilst the "modules" prop must have an array of `require` statements each with a string literal value.  
+Then you need to define a callback `function` as a child to the `CodeSplit` component.  This `function` will receive a single argument containing the result of fetching your code split module(s).  
 
-___NOTE:___ The paths contained within the `require` statements MUST be string literals. You can't pass a variable or a function that resolves to a variable to the require statements as Webpack needs string literals in order to do correct module analysis/resolving for the code splitting procedure to work.
-
-In addition to the `module`/`modules` prop you need to define a callback `function` as a child to the `CodeSplit` component.  This `function` will receive a single argument and should return whatever you would like to be rendered (or null if not).  
-
-If you used the `module` prop the argument to the callback will be your module.  If the module hasn't been fetched from the server yet it will be null.
+If you used the `module` then the argument will contain the module. However, if the module hasn't been loaded from the server yet this value will be null.
 
 If you used the `modules` prop then you will get an array that will be the same length as the arguments you provided to the `modules` prop.  If the modules haven't been fetched from the server yet then each position within the array will contain nulls.  Once all the modules have been fetched the array will contain the resolved modules and they will be in the same array index as specified within the `modules` prop.
 
@@ -73,7 +67,7 @@ __"module" example:__
 ```jsx
 import CodeSplit from 'code-split-component'
 
-<CodeSplit module={require('../Foo')}>
+<CodeSplit module={System.import('../Foo')}>
   { Foo => (Foo ? <Foo /> : <div>Loading...</div>) }
 </CodeSplit>
 ```
@@ -83,59 +77,60 @@ __"modules" example:__
 ```jsx
 import CodeSplit from 'code-split-component'
 
-<CodeSplit modules={[require('./Foo'), require('./Bar')]}>
+<CodeSplit modules={[System.import('./Foo'), System.import('./Bar')]}>
   { ([Foo, Bar]) => (Foo && Bar ? <div><Foo /><Bar /></div> : <div>Loading...</div>) }
 </CodeSplit>
 ```
 
-## Examples
+## Example
 
 ### Built in Example
 
 There is a React Router 4 based example in the `/example` folder.
 
+The example includes hot module reloading backed by React Hot Loader v3.
+
 Clone this repo and then run the following commands:
 
 ```
 npm install
-npm run example:prod
+npm run example
 ```
 
-That will run a production build of the code contained within the example folder.  The production build includes the code splitting feature.
+## Server Side Rendering (SSR) Support
 
-For development mode of the example you can run the following command:
+Using the `System.import` API on the server is not recommended as it results in a `Promise`, which is asynchronous.  Therefore when doing SSR you will likely only see a blank space or a "loading" indicator showing where the component will be loaded.  When the application is served the client will go off and fetch the required component however you lose a lot of the power and benefit of doing a pre-render on the server.
 
-```
-npm run example:dev
-```
+In order to resolve this issue I have provided a Babel plugin that you can use to transpile the `System.import` statements into the standard synchronous `require` statements.
 
-Note: in development mode we override the code-split-component babel plugin configuration to disable code splitting.  This is so that we can have a full featured React Hot Loader implementation. It's a seamless transition.
+You can enable this feature by adding the babel plugin to your babel configuration.  
 
-### Universal / Isomorphic Example
-
-This lib was built for use within the [react-universally](https://github.com/ctrlplusb/react-universally) starter kit. This starter kit provides you with a minimal configuration to get going with a server side rendering React application.
-
-I haven't completed the integration of `code-split-component` into the starter kit yet, however, you can preview the current usage within the [`next`](https://github.com/ctrlplusb/react-universally/tree/next) branch.
-
-## Caveats / FAQs
-
-### Hot Reloading
-
-HMR won't work if you have the code splitting enabled. However, there is an easy workaround. Simply update your Babel config and set up the `env` section so that the code splitting will only be enabled for your production build.
-
-e.g.
-
-```
+```json
 {
-  "env": {
-    "development": {
-      "plugins": [["code-split-component/babel", { "noCodeSplitting": true }]]
-    },
-    "production": {
-      "plugins": ["code-split-component/babel"]
-    }
-  }
+  "plugins": ["code-split-component/babel"]
 }
+``` 
+
+___NOTE___: Make sure you only use this configuration for the server bundle.
+
+The plugin also ships with a configuration option that allows you to enable/disable the code splitting.  This can be useful when dynamically generating your Babel configuration.
+
+```js
+  const isClientBundle = true; // or false when transpiling/bundling
+                               // your server code,
+
+  const babelConfig = {
+    plugins: [
+      [
+        // Our plugin
+        'code-split-component/babel', 
+        // The options for the plugin
+        // So we only want code splitting enabled for our client
+        // bundles. Any server bundle should not use code splitting.
+        { enableCodeSplitting: isClientBundle }
+      ]
+    ]
+  }
 ```
 
-Remember you need to have set your `NODE_ENV` environment variable to either "development" or "production" for the above to work.
+To see a full example of this I recommend you check out my [`react-universally`](https://github.com/ctrlplusb/react-universally) starter kit. This starter kit provides you with a minimal configuration to get going with a server side rendering React application.  It bundles both the client and server code using Webpack & Babel. I haven't completed the integration of `code-split-component` into the starter kit yet, however, you can preview the current usage within the [`next`](https://github.com/ctrlplusb/react-universally/tree/next) branch.
