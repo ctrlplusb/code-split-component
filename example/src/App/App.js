@@ -15,18 +15,18 @@ function App() {
           <Match
             exactly
             pattern="/"
-            render={() =>
+            render={routerProps =>
               <CodeSplit module={System.import('./Home')}>
-                { Home => (Home ? <Home /> : <div>Loading...</div>) }
+                { Home => (Home ? <Home {...routerProps} /> : <div>Loading...</div>) }
               </CodeSplit>
             }
           />
 
           <Match
             pattern="/about"
-            render={() =>
+            render={routerProps =>
               <CodeSplit module={System.import('./About')}>
-                { About => (About ? <About /> : <div>Loading...</div>) }
+                { About => (About ? <About {...routerProps} /> : <div>Loading...</div>) }
               </CodeSplit>
             }
           />
