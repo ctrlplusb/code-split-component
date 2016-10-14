@@ -13,9 +13,9 @@ import CodeSplit from 'code-split-component'
 
 ---
 
-___Confession___
+___Great Appreciation!___
 
-_This idea for this library has been completely inspired (ripped off) from Sunil Pai's original work. I highly recommend you go check it out: [`react-modules`](https://github.com/threepointone/react-modules) 
+This idea for this library has been completely inspired (ripped off) from Sunil Pai's original work. I highly recommend you go check it out: [`react-modules`](https://github.com/threepointone/react-modules)
 
 There are a few crucial differences between this library and his:
 
