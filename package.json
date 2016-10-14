@@ -1,7 +1,7 @@
 {
   "name": "code-split-component",
-  "version": "0.0.4",
-  "description": "A React Component and Babel 6 plugin to support code splitting in Webpack 2 powered projects.",
+  "version": "1.0.0",
+  "description": "Declarative code splitting for your Wepback 2 bundled React projects, with SSR support.",
   "main": "lib/index.js",
   "engines": {
     "node": "~6.7.0"
