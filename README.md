@@ -7,7 +7,7 @@ Declarative code splitting for your Wepback 2 bundled React projects, with SSR s
 import CodeSplit from 'code-split-component'
 
 <CodeSplit module={System.import('../Foo')}>
-  { Foo => (Foo ? <Foo /> : <div>Loading...</div>) }
+  { Foo => Foo && <Foo /> }
 </CodeSplit>
 ```
 
@@ -79,7 +79,7 @@ __"modules" example:__
 import CodeSplit from 'code-split-component'
 
 <CodeSplit modules={[System.import('./Foo'), System.import('./Bar')]}>
-  { ([Foo, Bar]) => (Foo && Bar ? <div><Foo /><Bar /></div> : <div>Loading...</div>) }
+  { ([Foo, Bar]) => Foo && Bar && <div><Foo /><Bar /></div> }
 </CodeSplit>
 ```
 
@@ -105,13 +105,13 @@ You can easily combine React Router 4's declaritive API with this one to get cod
   pattern="/about"
   render={routerProps =>
     <CodeSplit module={System.import('./About')}>
-      { About => (About ? <About {...routerProps} /> : <div>Loading...</div>) }
+      { About => About && <About {...routerProps} /> }
     </CodeSplit>
   }
 />
 ```
 
-Zing! 
+Zing!
 
 ## Server Side Rendering (SSR) Support
 
@@ -125,7 +125,7 @@ You can enable this feature by adding the babel plugin to your babel configurati
 {
   "plugins": ["code-split-component/babel"]
 }
-``` 
+```
 
 ___NOTE___: Make sure you only use this configuration for the server bundle.
 
@@ -139,7 +139,7 @@ The plugin also ships with a configuration option that allows you to enable/disa
     plugins: [
       [
         // Our plugin
-        'code-split-component/babel', 
+        'code-split-component/babel',
         // The options for the plugin
         // So we only want code splitting enabled for our client
         // bundles. Any server bundle should not use code splitting.

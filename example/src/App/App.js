@@ -17,7 +17,7 @@ function App() {
             pattern="/"
             render={routerProps =>
               <CodeSplit module={System.import('./Home')}>
-                { Home => (Home ? <Home {...routerProps} /> : <div>Loading...</div>) }
+                { Home => Home && <Home {...routerProps} /> }
               </CodeSplit>
             }
           />
@@ -26,7 +26,7 @@ function App() {
             pattern="/about"
             render={routerProps =>
               <CodeSplit module={System.import('./About')}>
-                { About => (About ? <About {...routerProps} /> : <div>Loading...</div>) }
+                { About => About && <About {...routerProps} /> }
               </CodeSplit>
             }
           />
