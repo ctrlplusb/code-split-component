@@ -89,7 +89,7 @@ import CodeSplit from 'code-split-component'
 
 There is a React Router 4 based example in the `/example` folder.
 
-The example includes hot module reloading backed by React Hot Loader v3.
+The example includes hot module reloading backed by a standard Webpack 2 hot reloading configuration (i.e. not using `react-hot-loader` v3).
 
 Clone this repo and then run the following commands:
 
@@ -159,5 +159,7 @@ To see a full example of this I recommend you check out my [`react-universally`]
 ## React Hot Loader v3 Support
 
 Unfortunately RHL3 doesn't like our `CodeSplit` loaded modules. It only partially supports hot reloading of any modules that were loaded via the `CodeSplit` component, requiring you to change and save a component a minimum of two times before an update is rendered to the screen.  In order to resolve this I recommend that you disable code splitting using the [Babel plugin](https://github.com/ctrlplusb/code-split-component#babel-plugin) whilst in development mode.
+
+___NOTE:___ Standard Webpack HMR seems to work fine without having to disable code splitting. The example in this project includes a standard Webpack HMR configuration.
 
 To see a full example of this I recommend you check out my [`react-universally`](https://github.com/ctrlplusb/react-universally) starter kit. This starter kit provides you with a minimal configuration to get going with a server side rendering React application.  It bundles both the client and server code using Webpack & Babel. I haven't completed the integration of `code-split-component` into the starter kit yet, however, you can preview the current usage within the [`next`](https://github.com/ctrlplusb/react-universally/tree/next) branch.

@@ -5,7 +5,6 @@ module.exports = function configFactory() {
   return {
     entry: {
       app: [
-        'react-hot-loader/patch',
         'webpack-hot-middleware/client?reload=true',
         path.resolve(__dirname, './src/index.js'),
       ],
@@ -37,9 +36,6 @@ module.exports = function configFactory() {
             presets: [
               'react',
               ['latest', { modules: false }],
-            ],
-            plugins: [
-              'react-hot-loader/babel',
             ],
           },
         },
