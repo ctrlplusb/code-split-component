@@ -32,7 +32,7 @@ There are a few crucial differences between this library and his:
  - [Usage](https://github.com/ctrlplusb/code-split-component#usage)
  - [Example](https://github.com/ctrlplusb/code-split-component#example)
  - [Combining with React Router 4](https://github.com/ctrlplusb/code-split-component#combining-with-react-router-4)
- - [Babel Plugin](https://github.com/ctrlplusb/code-split-component#babel-plugin))
+ - [Babel Plugin](https://github.com/ctrlplusb/code-split-component#babel-plugin)
  - [Server Side Rendering (SSR) Support](https://github.com/ctrlplusb/code-split-component#server-side-rendering-ssr-support)
  - [React Hot Loader v3 Support](https://github.com/ctrlplusb/code-split-component#react-hot-loader-v3-support)
 
@@ -41,7 +41,7 @@ There are a few crucial differences between this library and his:
 
 This library consists of a React component allowing you to declaratively use Webpack 2's code splitting feature within your projects.
 
-In addition to the component it also ships with a Babel 6 plugin that will allow you to use the component in a server side rendering context.
+In addition to the component it also ships with a Babel 6 plugin that will allow you to use the component in a server side rendering context and support `react-hot-loader` v3.
 
 ## Installation
 
@@ -121,9 +121,9 @@ A Babel plugin has been included in the project to allow you to control the beha
 
  - Disabling code splitting for your entire project without making code changes.
  - Supporting server side rendering bundles.
- - Supporting `react-hot-loader` whilst in development mode.
+ - Supporting `react-hot-loader` v3.
 
-By default if you include the plugin within your Babel coniguration it will disable code splitting.
+By default if you include the plugin within your Babel configuration it will disable code splitting.
 
 ```json
 {
@@ -139,9 +139,9 @@ The plugin also ships with a configuration options, allowing you to specify if c
       [
         // Our plugin
         'code-split-component/babel',
-        // The options for the plugin
-        // So we only want code splitting enabled for our client
-        // bundles. Any server bundle should not use code splitting.
+        // We could call a function, query a process.env.X var or
+        // something else for example to determine whether or not
+        // to disable the code splitting feature.
         { enableCodeSplitting: shouldWeDisableCodeSplitting() }
       ]
     ]
