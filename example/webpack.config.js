@@ -38,6 +38,9 @@ module.exports = function configFactory() {
               'react',
               ['latest', { modules: false }],
             ],
+            plugins: [
+              'react-hot-loader/babel',
+            ],
           },
         },
       ],

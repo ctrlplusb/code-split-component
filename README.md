@@ -32,7 +32,9 @@ There are a few crucial differences between this library and his:
  - [Usage](https://github.com/ctrlplusb/code-split-component#usage)
  - [Example](https://github.com/ctrlplusb/code-split-component#example)
  - [Combining with React Router 4](https://github.com/ctrlplusb/code-split-component#combining-with-react-router-4)
+ - [Babel Plugin](https://github.com/ctrlplusb/code-split-component#babel-plugin))
  - [Server Side Rendering (SSR) Support](https://github.com/ctrlplusb/code-split-component#server-side-rendering-ssr-support)
+ - [React Hot Loader v3 Support](https://github.com/ctrlplusb/code-split-component#react-hot-loader-v3-support)
 
 
 ## About
@@ -113,13 +115,15 @@ You can easily combine React Router 4's declaritive API with this one to get cod
 
 Zing!
 
-## Server Side Rendering (SSR) Support
+## Babel Plugin
 
-Using the `System.import` API on the server is not recommended as it results in a `Promise`, which is asynchronous.  Therefore when doing SSR you will likely only see a blank space or a "loading" indicator showing where the component will be loaded.  When the application is served the client will go off and fetch the required component however you lose a lot of the power and benefit of doing a pre-render on the server.
+A Babel plugin has been included in the project to allow you to control the behavior of the component, i.e. it allows you enable/disable the code splitting feature.  When code splitting is disabled any `System.import` statements used by the `CodeSplit` components are transpiled into standard `require` statements.  This can be useful for the following cases:
 
-In order to resolve this issue I have provided a Babel plugin that you can use to transpile the `System.import` statements into the standard synchronous `require` statements.
+ - Disabling code splitting for your entire project without making code changes.
+ - Supporting server side rendering bundles.
+ - Supporting `react-hot-loader` whilst in development mode.
 
-You can enable this feature by adding the babel plugin to your babel configuration.  
+By default if you include the plugin within your Babel coniguration it will disable code splitting.
 
 ```json
 {
@@ -127,14 +131,9 @@ You can enable this feature by adding the babel plugin to your babel configurati
 }
 ```
 
-___NOTE___: Make sure you only use this configuration for the server bundle.
-
-The plugin also ships with a configuration option that allows you to enable/disable the code splitting.  This can be useful when dynamically generating your Babel configuration.
+The plugin also ships with a configuration options, allowing you to specify if code splitting should be disabled or not. This can be useful when dynamically generating your Babel configuration.
 
 ```js
-  const isClientBundle = true; // or false when transpiling/bundling
-                               // your server code,
-
   const babelConfig = {
     plugins: [
       [
@@ -143,10 +142,22 @@ The plugin also ships with a configuration option that allows you to enable/disa
         // The options for the plugin
         // So we only want code splitting enabled for our client
         // bundles. Any server bundle should not use code splitting.
-        { enableCodeSplitting: isClientBundle }
+        { enableCodeSplitting: shouldWeDisableCodeSplitting() }
       ]
     ]
   }
 ```
+
+## Server Side Rendering (SSR) Support
+
+Using the `System.import` API on the server is not recommended as it results in a `Promise`, which is asynchronous.  Therefore when doing SSR you will likely only see a blank space or a "loading" indicator showing where the component will be loaded.  When the application is served the client will go off and fetch the required component however you lose a lot of the power and benefit of doing a pre-render on the server.
+
+In order to resolve this issue it is recommended that you use the provided a [Babel plugin](https://github.com/ctrlplusb/code-split-component#babel-plugin) and transpile your server bundle to ensure that the `System.import` statements for your `CodeSplit` instances will be converted into synchronous `require` statements.
+
+To see a full example of this I recommend you check out my [`react-universally`](https://github.com/ctrlplusb/react-universally) starter kit. This starter kit provides you with a minimal configuration to get going with a server side rendering React application.  It bundles both the client and server code using Webpack & Babel. I haven't completed the integration of `code-split-component` into the starter kit yet, however, you can preview the current usage within the [`next`](https://github.com/ctrlplusb/react-universally/tree/next) branch.
+
+## React Hot Loader v3 Support
+
+Unfortunately RHL3 doesn't like our `CodeSplit` loaded modules. It only partially supports hot reloading of any modules that were loaded via the `CodeSplit` component, requiring you to change and save a component a minimum of two times before an update is rendered to the screen.  In order to resolve this I recommend that you disable code splitting using the [Babel plugin](https://github.com/ctrlplusb/code-split-component#babel-plugin) whilst in development mode.
 
 To see a full example of this I recommend you check out my [`react-universally`](https://github.com/ctrlplusb/react-universally) starter kit. This starter kit provides you with a minimal configuration to get going with a server side rendering React application.  It bundles both the client and server code using Webpack & Babel. I haven't completed the integration of `code-split-component` into the starter kit yet, however, you can preview the current usage within the [`next`](https://github.com/ctrlplusb/react-universally/tree/next) branch.
