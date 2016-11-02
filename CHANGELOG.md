@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.1] - 2016-11-02
+
+### Changed
+
+Updates dependencies.
+
+Changes the engines config in package.json.
+
 ## [1.0.0] - 2016-10-14
 
 A complete reimaganing of this library, breaking away from react-modules with it's own identity.  This library will now do code splitting by default using Webpack 2's native APIs and provides the babel plugin to support SSR projects.  Everything works great, HMR and SSR, and it solves all my original problems I set out to meet.  I like that it doesn't need the babel plugin unless you want to upscale into SSR.
