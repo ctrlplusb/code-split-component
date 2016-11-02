@@ -4,7 +4,7 @@
   "description": "Declarative code splitting for your Wepback 2 bundled React projects, with SSR support.",
   "main": "lib/index.js",
   "engines": {
-    "node": "~6.7.0"
+    "node": ">=6.0.0"
   },
   "scripts": {
     "build": "babel src -d lib --presets latest,react",
