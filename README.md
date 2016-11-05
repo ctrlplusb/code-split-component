@@ -1,3 +1,9 @@
+## WARNING! NOT OPTIMAL AT THE MOMENT!
+
+This library is not optimal in design. A rewrite is occuring which will be far more efficient.  I am going to try an maintain a similar API, however, there will be some differences.  It's definitely a breaking change, but it won't be difficult to migrate to, with the payoff definitely worth it.  Track it all [here](https://github.com/ctrlplusb/code-split-component/issues/7).
+
+---
+
 # ✂️ code-split-component
 
 Declarative code splitting for your Wepback 2 bundled React projects, with SSR support.
