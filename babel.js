@@ -1,1 +1,1 @@
-module.exports = require('./lib/babel.js')
+module.exports = require('./commonjs/babel/plugin.js');

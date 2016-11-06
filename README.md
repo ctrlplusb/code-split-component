@@ -1,3 +1,9 @@
+### VERSION 2 REWRITE
+
+The below docs are invalid.  This branch is in active, major development.
+
+-----
+
 # ✂️ code-split-component
 
 Declarative code splitting for your Wepback 2 bundled React projects, with SSR support.

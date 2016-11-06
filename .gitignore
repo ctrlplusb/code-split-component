@@ -1,7 +1,24 @@
-npm-debug.log
+# Temp / OS Files
 .DS_Store
-profile
-build/
+
+# Logs
+logs
+*.log
+
+# Dependencies
+node_modules
+
+# Debug log from npm
+npm-debug.log
+
+# Coverage output
+.nyc_output
+coverage
+
+# Build output
+umd
+commonjs
 example/build/
-node_modules/
-lib/
+
+# Flow-Types
+flow-typed/
