@@ -2,6 +2,62 @@
 
 import { Component, PropTypes } from 'react';
 
+let HMR_NOT_SUPPORTED;
+
+if (process.env.NODE_ENV === 'development') {
+  HMR_NOT_SUPPORTED = `
+================================================================================
+ERROR: code-split-component
+
+Sorry, unfortunately code-split-component does not support hot module reloading.
+
+If you wish to use it in a hot relaoading environment please set the 'disabled'
+option on both the babel and webpack plugins to true.  This will force the
+code-split-component instances to work in a synchronous manner that is friendlier
+to development and hot reloading environments.  Code splitting is a production
+based optimisation, so hopefully this is not an issue for you.
+
+e.g.
+
+const webpackConfig = {
+  plugins: [
+    new CodeSplitPlugin({
+      // The code-split-component doesn't work nicely with hot module reloading,
+      // which we use in our development builds, so we will disable it (which
+      // ensures synchronously behaviour on the CodeSplit instances).
+      disabled: process.env.NODE_ENV === 'development',
+    }),
+  ],
+  module: {
+    rules: [
+      {
+        test: 'js',
+        loader: 'babel',
+        query: {
+          plugins: [
+            [
+              'code-split-component/babel',
+              {
+                // The code-split-component doesn't work nicely with hot
+                // module reloading, which we use in our development builds,
+                // so we will disable it (which ensures synchronously
+                // behaviour on the CodeSplit instances).
+                disabled: process.env.NODE_ENV === 'development',
+              },
+            ],
+          ]
+        }
+      }
+
+    ]
+  }
+}
+
+================================================================================`;
+} else {
+  HMR_NOT_SUPPORTED = 'HMR not supported for code-split-component';
+}
+
 const es6Safe = module => (module.default ? module.default : module);
 const ensureES6Safe = (x) => () => {
   const result = x();
@@ -32,6 +88,10 @@ class CodeSplit extends Component {
   componentWillMount() {
     const { modules, moduleMap } = this.props;
     if (typeof modules === 'function') {
+      if (module.hot) {
+        throw new Error(HMR_NOT_SUPPORTED);
+      }
+
       // Async modules.
       const alreadyResolved =
         Object.keys(moduleMap).length === Object.keys(this.getModules()).length;

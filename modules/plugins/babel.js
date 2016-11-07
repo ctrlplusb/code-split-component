@@ -107,9 +107,9 @@ function codeSplitBabelPlugin({ types: t }) {
           // -------------------------------------------------------------------
           // Convert the modules into our required async format
 
-          if (state.opts.target !== 'node') {
-            // For a node target we don't want to transpile the modules into
-            // asynchronous code.
+          if (state.opts.role !== 'server') {
+            // For a server we don't want to transpile the modules into
+            // asynchronous code.  They'll need to be executed synchronously.
             modulesProp.value = t.jSXExpressionContainer(
               modulesTemplate({
                 REQUIRES: t.objectExpression(modulesProp.value.expression.properties),
