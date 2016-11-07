@@ -3,6 +3,13 @@
 import { Component, PropTypes } from 'react';
 
 const es6Safe = module => (module.default ? module.default : module);
+const ensureES6Safe = (x) => () => {
+  const result = x();
+  Object.keys(result).forEach(key => {
+    result[key] = es6Safe(result[key]);
+  });
+  return result;
+};
 
 type Resolved = { [key: string]: Function };
 
@@ -35,6 +42,11 @@ class CodeSplit extends Component {
         // Fire the fetch modules function.
         modules(this.resolutionCallback);
       }
+    } else if (moduleMap) {
+      // Sync modules.
+      // We have a module map available. This probably means an SSR render is
+      // occurring, so lets register these modules.
+      this.resolutionCallback(modules);
     }
   }
 
@@ -45,12 +57,13 @@ class CodeSplit extends Component {
     Object.keys(resolved).forEach((moduleName) =>
       registerModule(
         moduleMap[moduleName], // id
-        es6Safe(resolved[moduleName]) // module
+        resolved[moduleName] // module
       )
     );
+    this.setState({ resolving: false });
   }
 
-  getModules = () => {
+  getModules = ensureES6Safe(() => {
     const { modules } = this.props;
     if (typeof modules === 'object') {
       // Sync modules.
@@ -59,14 +72,16 @@ class CodeSplit extends Component {
     // Async modules, retrieve from registry.
     const { moduleMap } = this.props;
     const { retrieveModule } = this.context;
-    const moduleIds = Object.keys(moduleMap);
-    return moduleIds.reduce((acc, moduleName) => {
-      const key = moduleMap[moduleName];
-      const module = retrieveModule(key);
-      acc[moduleName] = module; // eslint-disable-line no-param-reassign
+    const moduleNames = Object.keys(moduleMap);
+    return moduleNames.reduce((acc, moduleName) => {
+      const moduleId = moduleMap[moduleName];
+      const module = retrieveModule(moduleId);
+      if (module) {
+        acc[moduleName] = module; // eslint-disable-line no-param-reassign
+      }
       return acc;
     }, {});
-  }
+  })
 
   render() {
     return this.props.children(this.getModules()) || null;

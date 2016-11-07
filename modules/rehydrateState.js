@@ -3,19 +3,14 @@
 /* eslint-disable no-console */
 
 import STATE_IDENTIFIER from './stateIdentifier';
+import chunkNameHash from './utils/chunkNameHash';
 
 function logError(err) {
   console.log(
     'An error occurred whilst attempting to rehydrate code-split-component.',
-    err
+    err,
+    err.stack
   );
-}
-
-function resolveModule(moduleId) {
-  return Promise.resolve({
-    id: moduleId,
-    module: __webpack_require__(moduleId),
-  });
 }
 
 function rehydrate() {
@@ -24,16 +19,20 @@ function rehydrate() {
   }
 
   return new Promise((resolve) => {
-    if (window && window[STATE_IDENTIFIER]) {
+    if (!window || !window[STATE_IDENTIFIER]) {
       resolve();
       return;
     }
 
-    const { modules } = windowwindow[STATE_IDENTIFIER];
+    const { chunks, modules } = window[STATE_IDENTIFIER];
 
-    // Ensure our primary bundle chunk is loaded
-    __webpack_require__.e/* nsure */(0)
-      .then(() => Promise.all(modules.map(resolveModule)))
+    Promise.all(chunks.map(chunkName => __webpack_require__.e(chunkNameHash(chunkName))))
+      .then(() =>
+        modules.map(moduleId => ({
+          id: moduleId,
+          module: __webpack_require__(moduleId),
+        }))
+      )
       .then(resolve)
       .catch(logError);
   });

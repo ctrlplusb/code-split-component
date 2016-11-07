@@ -1,21 +1,24 @@
 /* @flow */
 
-function createServerRenderContext() {
+function createRenderContext() {
   const chunks = new Set();
   const modules = new Set();
 
   const registerChunk = (chunkName: string) => chunks.add(chunkName);
   const registerModule = (moduleId: string) => modules.add(moduleId);
 
-  const getRehydrationState = () => ({
+  const getState = () => ({
+    // $FlowFixMe
+    chunks: [...chunks],
+    // $FlowFixMe
     modules: [...modules],
   });
 
   return {
     registerChunk,
     registerModule,
-    getRehydrationState,
+    getState,
   };
 }
 
-export default createServerRenderContext;
+export default createRenderContext;

@@ -6,8 +6,8 @@ class CodeSplitProvider extends Component {
   // Prop types.
   static propTypes = {
     children: PropTypes.element.isRequired,
-    context: PropTypes.object,
-    rehydrations: PropTypes.arrayOf(PropTypes.object),
+    context: PropTypes.object, // eslint-disable-line
+    state: PropTypes.arrayOf(PropTypes.object),
   };
 
   // Context types
@@ -23,15 +23,17 @@ class CodeSplitProvider extends Component {
 
   getChildContext() {
     return {
-      registerChunkLoaded: this.retrieveModule,
+      registerChunkLoaded: this.registerChunkLoaded,
       registerModule: this.registerModule,
       retrieveModule: this.retrieveModule,
     };
   }
 
   componentWillMount() {
-    const { rehydrations } = this.props;
-    rehydrations.forEach(({ id, module }) => this.registerModule(id, module));
+    const { state } = this.props;
+    if (state) {
+      state.forEach(({ id, module }) => this.registerModule(id, module));
+    }
   }
 
   registerChunkLoaded = (chunkName: string) => {

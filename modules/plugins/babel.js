@@ -71,9 +71,7 @@ function codeSplitBabelPlugin({ types: t }) {
   return {
     visitor: {
       JSXElement(path, state) {
-        if (state.opts.target === 'node') {
-          // For a node target we don't want to transpile the modules into
-          // asynchronous code.
+        if (state.opts.disabled) {
           return;
         }
 
@@ -85,32 +83,19 @@ function codeSplitBabelPlugin({ types: t }) {
           validateProps(chunkNameProp, modulesProp);
 
           // -------------------------------------------------------------------
-          // Convert the modules into our required async format
-
-          modulesProp.value = t.jSXExpressionContainer(
-            modulesTemplate({
-              REQUIRES: t.objectExpression(modulesProp.value.expression.properties),
-              CHUNKNAME: t.stringLiteral(chunkNameProp.value.value),
-            }).expression
-          );
-
-          // -------------------------------------------------------------------
           // Add the moduleMap
 
           // This is the base path from which the require statements will be
           // getting resolved against.
           const basePath = nodePath.dirname(state.file.opts.filename);
 
-          const requireProperties = modulesProp
-            .value.expression.body.arguments[1].body.arguments[0].properties;
-          const moduleMapProperties = requireProperties.map(moduleRequire =>
-            t.objectProperty(
-              t.identifier(moduleRequire.key.name),
-              t.stringLiteral(
-                modulePathHash(nodePath.resolve(basePath, moduleRequire.value.arguments[0].value))
-              )
-            )
-          );
+          const requireProperties = modulesProp.value.expression.properties;
+          const moduleMapProperties = requireProperties.map((moduleRequire) => {
+            const moduleName = moduleRequire.key.name;
+            const modulePath = nodePath.resolve(basePath, moduleRequire.value.arguments[0].value);
+            const hash = modulePathHash(modulePath);
+            return t.objectProperty(t.identifier(moduleName), t.stringLiteral(hash));
+          });
 
           path.node.openingElement.attributes.push(
             t.jSXAttribute(
@@ -118,6 +103,20 @@ function codeSplitBabelPlugin({ types: t }) {
               t.jSXExpressionContainer(t.objectExpression(moduleMapProperties))
             )
           );
+
+          // -------------------------------------------------------------------
+          // Convert the modules into our required async format
+
+          if (state.opts.target !== 'node') {
+            // For a node target we don't want to transpile the modules into
+            // asynchronous code.
+            modulesProp.value = t.jSXExpressionContainer(
+              modulesTemplate({
+                REQUIRES: t.objectExpression(modulesProp.value.expression.properties),
+                CHUNKNAME: t.stringLiteral(chunkNameProp.value.value),
+              }).expression
+            );
+          }
         }
       },
     },
