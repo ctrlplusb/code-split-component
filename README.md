@@ -398,12 +398,12 @@ return (
 
 Here is a break down of each prop:
 
-  - __`context`__ (object) - An optional property only needed when in a server side rendering context. This specific property will typically only be used on the server render.  It allows you to pass a `renderContext` instance created by the `createRenderContext` API function (see below).
-  - __`state`__ (object) - An optional property only needed in a server side rendering context. This specific property will typically only be used on the client render.  It allows you to rehydrate a known "loaded" chunk/module state that is received from the `rehydrateState` API function (see below).
+  - __`context`__ (object) - An optional property only needed when in a server side rendering application. This specific property will typically only be used on the server render.  It allows you to pass a `renderContext` instance created by the `createRenderContext` API function (see below).
+  - __`state`__ (object) - An optional property only needed in a server side rendering application. This specific property will typically only be used on the client render.  It allows you to rehydrate a known "loaded" chunk/module state that is received from the `rehydrateState` API function (see below).
 
 ### `createRenderContext` (and `STATE_IDENTIFIER`)
 
-Typically only useful in a server side rendering context, specifically on the server side.
+Typically only useful in a server side rendering application, specifically on the server side.
 
 It is used to create a "render context" to provide as the `context` prop on the `CodeSplitProvider` instance.  After an your application has been rendered into a string (as is typical for a SSR app) you can execute the `getState` function on the context instance in order to get a state object that represents the chunks/modules that were loaded in the given request.  This is useful to then bind the response that gets sent to the client so that the client application can rehydrate it's state appropriately, ensuring that the React checksums are maintained and that no unnecessary double rendering occurs.
 
@@ -444,7 +444,7 @@ function expressMiddleware(req, res) {
 
 ### `rehydrateState`
 
-Typically only useful in a server side rendering context, specifically on the client side.
+Typically only useful in a server side rendering application, specifically on the client side.
 
 This is used to create a rehydrated state, based on the state object that was bound by the server (see the `createRenderContext` API function docs above), to provide to the `CodeSplitProvider` instance that wraps our application.
 
