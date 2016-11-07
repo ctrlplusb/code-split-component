@@ -31,7 +31,9 @@ This library consists of a set of React components, a Webpack plugin, and a Babe
 
 Note: this library is in alpha status on the v2 rewrite.  Although it's alpha I highly recommend that you install the latest alpha.  The v1 API is considered inefficient and has been deprecated.
 
-`npm install code-split-component@2.0.0-alpha.1 --save`
+```
+npm install code-split-component@2.0.0-alpha.1 --save
+```
 
 ## Configuration
 
@@ -152,7 +154,7 @@ As you can see above, you need to provide a `chunkName` prop.  This will be the 
 
 The `modules` prop contains an object defining all the modules to include in the chunk.
 
-Finally, as a child to the `CodeSplit` instance you need to provide a render function.  This function will receive the result of fetching the code split modules from the server and is responsible for producing the respective render output.  It is provided a single parameter - an object that matches the one you provided in the `modules` prop. If a module prop has not yet been resolved from the server it will contain a `null` value, otherwise it will contain the resolved module.  So make sure you always check for nulls.  You can in those cases return nothing or for example a `<Loading />` component.  The above example may look a bit verbose, but I wanted to make it absolutely clear what was going on.  You can use ES6 features to create a more concise version:
+Finally, as a child to the `CodeSplit` instance you need to provide a render function.  This function will receive the result of resolving the code split modules from the server and is responsible for returning the render output.  It is provided a single parameter - an object whose shape matches the one you provided in the `modules` prop. If the modules have not been resolved from the server yet (it's an async operation) then each property will contain a `null` value, otherwise they will contain their respective resolved module.  So make sure you always check for nulls.  You can in those cases return nothing or for example a `<Loading />` component.  The above example may look a bit verbose, but I wanted to make it absolutely clear what was going on.  You can use ES6 features to create a more concise version:
 
 ```jsx
 <CodeSplit chunkName="home" modules={{ Home: require('./Home') }}>
@@ -162,7 +164,7 @@ Finally, as a child to the `CodeSplit` instance you need to provide a render fun
 
 ## Server Side Rendering Usage
 
-To use this library with a SSR application it is required that you use Webpack to bundle both the client and server (or universal middleware).  This is because this library relies on features only available within a Webpack bundle context in order to dynamically track/load chunks/modules.
+To use this library within a SSR application it is required that you use Webpack to bundle both the client and server (or at least the universal middleware used to render your React application).  This is because this library relies on API features only available within a Webpack bundle context in order to dynamically track/load the chunks/modules.
 
 You are typically going to have two sets of configurations.  A client and server configuration.  
 
@@ -187,15 +189,15 @@ rehydrateState().then(codeSplitState =>
 );
 ```
 
-That is only required difference compared to standard usage.
+That is the only difference compared to a client-only configuration.
 
 ### Server configuration
 
-As stated above it is a requirement that your server bundle (or at least the universal middleware) is bundled using Webpack.
+As stated above it is a requirement that your server bundle (or at least the universal middleware used to render your React application) is bundled using Webpack.
 
-For your server bundle Webpack configuration you need to make sure it includes both the provided Webpack and Babel plugins.  The Webpack plugin can use the standard/default options, however, the Babel plugin needs to be configured slightly differently for the server bundle.  Specifically, you need to to make sure you set the "role" option for the plugin to "server".
+Within your server's configuration you need to make sure it includes both the provided Webpack and Babel plugins.  The Webpack plugin can use the standard/default options, however, the Babel plugin needs to be configured slightly differently for the server bundle.  Specifically, you need to to make sure you set the "role" option for the plugin to "server".
 
-Below is an example Webpack configuration, on which we have provided the Babel options directly to the babel-loader.  This then demonstrates the full configuration required for a server bundle:
+Below is an example Webpack configuration, within which we have provided the Babel options directly to the babel-loader.  This then demonstrates the full configuration requirements for a server bundle:
 
 ```js
 import CodeSplitWebpackPlugin from 'code-split-component/webpack';
@@ -223,7 +225,7 @@ const webpackConfig = {
 }
 ```
 
-As you can see above the important bit is setting `role='server'`.  Setting this value ensures that our `CodeSplit` instances are resolved synchronously so that we get a "full render" result for each server request.
+As you can see above the important bit is setting `role='server'`.  Setting this value ensures that our `CodeSplit` instances are resolved synchronously so that we get a "full render" result for each server request.  This is technically the only difference in the Webpack/Babel plugin configurations between the client and server.
 
 Ok, with the configuration complete you need to update your middleware used to render the application to be similar to the following:
 
@@ -264,17 +266,19 @@ function expressMiddleware(req, res) {
 }
 ```
 
-That's it. Using the `CodeSplit` modules does not change as described in the API docs above.
+That's it. You can use the standard `CodeSplit` component API, even for an SSR application.
 
-### Going one step further - an optimisation.
+### Going one step further - a nice optimisation.
 
-When doing a server render it is possible to calculate and embed all the required script/style tags for each chunk that was loaded for a request.  This would then allow for the required chunk scripts/styles to be asynchronously loaded whilst our main scripts are being parsed.
+When doing a server render it is possible to calculate and embed all the required script/style tags for each chunk that was loaded for a request.  This would then allow our client to be asynchronously download the required chunk scripts/styles whilst the JS is being parsed.
 
-This isn't a requirement, our `rehydrateState` function does take of everything, but it could translate to some nice wins in some cases.
+This isn't a requirement, our `rehydrateState` function does take of fetching any chunk files that need to be fetched, however it could translate to some nice little performance wins.
 
 The [`assets-webpack-plugin`](https://github.com/kossnocorp/assets-webpack-plugin) can used to help us achieve this.  This plugin outputs a JSON file that represents each chunk included within our bundle along with the paths to the associated js/css files for each chunk.  When combining this with the `.getState()` call on our render context we can marry up the loaded bundles to this JSON file in order to determine which js/css files we should include.
 
-I am not going to provide example code here, but my [`react-universally`](https://github.com/ctrlplusb/react-universally) start kit contains an example of this optimisation.
+I am not going to provide example code here, but my [`react-universally`](https://github.com/ctrlplusb/react-universally/blob/master/src/universalMiddleware/index.js) start kit contains an example of this optimisation.
+
+The solution is quite trivial when you see it. :)
 
 ### Full SSR Example
 
@@ -286,7 +290,7 @@ SSR is always quite an involved process.  I highly recommend that you check out 
 
 The babel plugin does all the heavy lifting for you, transpiling your `CodeSplit` instances into a required format to support the code splitting feature.  It saves you from a lot of boilerplate overhead.
 
-We will demonstrate the full API for the Babel plugin via the following `.babelrc` configuration, with each option containin the default value assigned.
+We will demonstrate the full API for the Babel plugin via the following `.babelrc` configuration, with each option containing the default value assigned.
 
 ```js
 {
