@@ -37,7 +37,6 @@ class CodeSplit extends Component {
         Object.keys(moduleMap).length === Object.keys(this.getModules()).length;
       if (!alreadyResolved) {
         // Not all the modules have been resolved yet.
-        console.log('Resolving modules for', this.props.chunkName); // eslint-disable-line
         this.setState({ resolving: true });
         // Fire the fetch modules function.
         modules(this.resolutionCallback);
