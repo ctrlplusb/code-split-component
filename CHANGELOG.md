@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.0-alpha.2] - 2016-11-07
+
+### Fixed
+
+Issues created when a chunk id is a negative number.
+
+## [2.0.0-alpha.0] - 2016-11-07
+
+### Breaking Changes
+
+Complete rewrite! Read the docs. :)
+
 ## [1.0.1] - 2016-11-02
 
 ### Changed
