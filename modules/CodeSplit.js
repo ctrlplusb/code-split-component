@@ -21,7 +21,7 @@ e.g.
 
 const webpackConfig = {
   plugins: [
-    new CodeSplitPlugin({
+    new CodeSplitWebpackPlugin({
       // The code-split-component doesn't work nicely with hot module reloading,
       // which we use in our development builds, so we will disable it (which
       // ensures synchronously behaviour on the CodeSplit instances).
