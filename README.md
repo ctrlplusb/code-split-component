@@ -130,7 +130,14 @@ function MyApp() {
     <div>
       <h1>My App</h1>
       <CodeSplit chunkName="home" modules={{ Home: require('./Home') }}>
-        { ({ Home }) => Home && <Home /> }
+        {
+          function render(modules) {
+            const { Home } = modules;
+            return Home
+              ? <Home />
+              : <div>Loading...</div>;
+          }
+        }
       </CodeSplit>
     </div>
   );
@@ -141,9 +148,15 @@ Let's break down what is happening within this `CodeSplit` declaration...
 
 As you can see above, you need to provide a `chunkName` prop.  This will be the identifier that is used for the Webpack code split chunk that will be created.
 
-You then also needed to provide an object to the `modules` prop.  You can require multiple modules using this object. Each property key will be used to identify the module with the render ("Home" is the example above) function, and each property value must be a `require` statement containing a string literal (`require('./Home')` in the example above).
+The `modules` prop contains an object defining all the modules to include in the chunk.
 
-Finally, as a child to the `CodeSplit` instance you need to provide a render function.  This function will receive the result of fetching the code split modules from the server and is responsible for producing the respective render output.  It is provided a single parameter - an object that matches the one you provided in the `modules` prop. If a module prop has not yet been resolved from the server it will contain a `null` value, otherwise it will contain the resolved module.  So make sure you always check for nulls.  You can in those cases return nothing or for example a `<Loading />` component.
+Finally, as a child to the `CodeSplit` instance you need to provide a render function.  This function will receive the result of fetching the code split modules from the server and is responsible for producing the respective render output.  It is provided a single parameter - an object that matches the one you provided in the `modules` prop. If a module prop has not yet been resolved from the server it will contain a `null` value, otherwise it will contain the resolved module.  So make sure you always check for nulls.  You can in those cases return nothing or for example a `<Loading />` component.  The above example may look a bit verbose, but I wanted to make it absolutely clear what was going on.  You can use ES6 features to create a more concise version:
+
+```jsx
+<CodeSplit chunkName="home" modules={{ Home: require('./Home') }}>
+  { ({ Home }) => Home ? <Home /> : <div>Loading...</div> }
+</CodeSplit>
+```
 
 ## API
 
