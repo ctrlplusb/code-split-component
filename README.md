@@ -83,7 +83,7 @@ const webpackConfig = {
 
 And then modify your `.babelrc` to look similar to:
 
-```json
+```js
 {
   "plugins": ["code-split-component/babel"],
   "env": {
@@ -151,7 +151,7 @@ Finally, as a child to the `CodeSplit` instance you need to provide a render fun
 
 We will demonstrate the full API for the Babel plugin via the following `.babelrc` configuration, with each option containin the default value assigned.
 
-```json
+```js
 {
   "plugins": [
     ["code-split-component/babel", {
