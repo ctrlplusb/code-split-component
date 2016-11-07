@@ -9,7 +9,7 @@ const babelConfig = {
     'syntax-class-properties',
     'syntax-flow',
     'syntax-jsx',
-    [require('../modules/babel/plugin')],
+    [require('../modules/plugins/babel')],
   ],
 };
 
