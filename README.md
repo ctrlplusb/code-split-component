@@ -122,8 +122,8 @@ ReactDOM.render(
 
 Now, with your application you make use of the `CodeSplit` component to declare pieces of your application that you wish to be split into separate chunks by Webpack.  When run on the code split modules will be resolved asynchronously.
 
-```js
-import CodeSplit from 'code-split-component';
+```jsx
+import { CodeSplit } from 'code-split-component';
 
 function MyApp() {
   return (
@@ -210,16 +210,20 @@ Used to define a code split point within your application, declaring the modules
 We will demonstrate the full API of the `CodeSplit` component via the following example:
 
 ```jsx
-<CodeSplit chunkName="home" modules={{ Home: require('./Home') }}>
-  {
-    function render(modules) {
-      const { Home } = modules;
-      return Home
-        ? <Home />
-        : <div>Loading...</div>;
+import { CodeSplit } from 'code-split-component';
+
+return (
+  <CodeSplit chunkName="home" modules={{ Home: require('./Home') }}>
+    {
+      function render(modules) {
+        const { Home } = modules;
+        return Home
+          ? <Home />
+          : <div>Loading...</div>;
+      }
     }
-  }
-</CodeSplit>
+  </CodeSplit>
+);
 ```
 
 Here is a break down of each prop:
@@ -237,9 +241,13 @@ Tracks and manages the required code split state for the `CodeSplit` instances. 
 We will demonstrate the full API of the `CodeSplit` component via the following example:
 
 ```jsx
-<CodeSplitProvider context={context} state={state}>
-  <MyApp />
-</CodeSplitProvider>
+import { CodeSplitProvider } from 'code-split-component';
+
+return (
+  <CodeSplitProvider context={context} state={state}>
+    <MyApp />
+  </CodeSplitProvider>
+);
 ```
 
 Here is a break down of each prop:
@@ -338,7 +346,7 @@ rehydrateState().then(codeSplitState =>
 );
 ```
 
-That is pretty much the only required difference compared to standard usage.  The Babel and Webpack plugins must just use the default options.
+That is only required difference compared to standard usage.
 
 ### Server configuration
 
@@ -419,6 +427,14 @@ That's it. Using the `CodeSplit` modules does not change as described in the API
 
 ### Going one step further - an optimisation.
 
+When doing a server render it is possible to calculate and embed all the required script/style tags for each chunk that was loaded for a request.  This would then allow for the required chunk scripts/styles to be asynchronously loaded whilst our main scripts are being parsed.
+
+This isn't a requirement, our `rehydrateState` function does take of everything, but it could translate to some nice wins in some cases.
+
+The [`assets-webpack-plugin`](https://github.com/kossnocorp/assets-webpack-plugin) can used to help us achieve this.  This plugin outputs a JSON file that represents each chunk included within our bundle along with the paths to the associated js/css files for each chunk.  When combining this with the `.getState()` call on our render context we can marry up the loaded bundles to this JSON file in order to determine which js/css files we should include.
+
+I am not going to provide example code here, but my [`react-universally`](https://github.com/ctrlplusb/react-universally) start kit contains an example of this optimisation.
+
 ### SSR Example
 
 SSR is always quite an involved process.  I highly recommend that you check out my [`react-universally`](https://github.com/ctrlplusb/react-universally) starter kit to get a full featured reference implementation.
@@ -427,7 +443,30 @@ SSR is always quite an involved process.  I highly recommend that you check out 
 
 ### React Router v2/3
 
-TODO
+You could create a wrapping functional component to represent each of your code split route components.
+
+For e.g.
+
+```js
+import App from './components/App';
+import { CodeSplit } from 'code-split-component';
+
+function CodeSplitAbout(routerProps) {
+  return (
+    <CodeSplit chunkName="about" modules={{ About: require('./components/About') }}>
+      { ({ About }) => About && <About {...routerProps} /> }
+    </CodeSplit>
+  )
+}
+
+const router = (
+  <Router>
+    <Route path="/" component={App}>
+      <Route path="about" component={CodeSplitAbout} />
+    </Route>
+  </Router>
+);
+```
 
 ### React Router v4
 
@@ -443,8 +482,6 @@ You can easily combine React Router 4's declaritive API with this one to get cod
   }
 />
 ```
-
-Zing!
 
 ___COMING SOON:___ A custom `CodeSplitMatch` component that reduces this boilerplate dramatically.
 
