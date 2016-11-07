@@ -6,8 +6,8 @@ Declarative code splitting for your Wepback bundled React projects, with SSR sup
 
 import { CodeSplit } from 'code-split-component';
 
-<CodeSplit module={System.import('../Foo')}>
-  { Foo => Foo && <Foo /> }
+<CodeSplit chunkName="foo" module={{ Foo: require('../Foo') }}>
+  { ({ Foo }) => Foo && <Foo /> }
 </CodeSplit>
 ```
 
