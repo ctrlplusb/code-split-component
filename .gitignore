@@ -5,3 +5,7 @@ build/
 example/build/
 node_modules/
 lib/
+.nyc_output
+commonjs/
+coverage/
+flow-typed/

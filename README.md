@@ -1,6 +1,6 @@
-## WARNING! NOT OPTIMAL AT THE MOMENT!
+## VERSION 1 - DEPRECATED
 
-This library is not optimal in design. A rewrite is occuring which will be far more efficient.  I am going to try an maintain a similar API, however, there will be some differences.  It's definitely a breaking change, but it won't be difficult to migrate to, with the payoff definitely worth it.  Track it all [here](https://github.com/ctrlplusb/code-split-component/issues/7).
+Version 1 of this library is by no means optimal in design. Although v2 is in alpha status I highly recommend that you use it instead.
 
 ---
 
