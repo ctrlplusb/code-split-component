@@ -16,6 +16,7 @@ import { CodeSplit } from 'code-split-component';
 ## TOCs
 
  - [About](https://github.com/ctrlplusb/code-split-component#about)
+ - [Demo](https://github.com/ctrlplusb/code-split-component#demo)
  - [Installation](https://github.com/ctrlplusb/code-split-component#installation)
  - [Configuration](https://github.com/ctrlplusb/code-split-component#configuration)
  - [Usage](https://github.com/ctrlplusb/code-split-component#usage)
@@ -26,6 +27,12 @@ import { CodeSplit } from 'code-split-component';
 ## About
 
 This library consists of a set of React components, a Webpack plugin, and a Babel 6 plugin - the combination of which allows you to declaratively use Webpack's code splitting feature within your projects without heavy boilerplate code.
+
+## Demo
+
+Here is an example of react-universally, an SSR starter kit that makes use of this library:
+
+https://react-universally-jjnlcdmaxy.now.sh
 
 ## Installation
 
