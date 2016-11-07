@@ -42,21 +42,8 @@ import CodeSplitWebpackPlugin from 'code-split-component/webpack';
 
 const webpackConfig = {
   plugins: [
-    // You need to add the Webpack plugin.
     new CodeSplitWebpackPlugin(),
-  ],
-  module: {
-    rules: [
-      {
-        test: 'js',
-        loader: 'babel',
-        query: {
-          // And make sure you add the babel plugin too.
-          plugins: ['code-split-component/babel'],
-        }
-      }
-    ]
-  }
+  ]
 }
 ```
 
