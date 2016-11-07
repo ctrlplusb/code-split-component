@@ -1,0 +1,33 @@
+[include]
+
+[ignore]
+
+# Including these files causes issues.
+.*/node_modules/fbjs/.*
+.*/node_modules/flow-coverage-report/.*
+.*/node_modules/findup/.*
+.*/node_modules/config-chain/.*
+.*/node_modules/npmconf/.*
+
+[libs]
+
+# Official "flow-typed" repository definitions.
+flow-typed/npm
+
+# Custom definitions.
+tools/flow/definitions/
+
+# Note: the following definitions come bundled with flow. It can be handy
+# to reference them.
+# React: https://github.com/facebook/flow/blob/master/lib/react.js
+# Javascript: https://github.com/facebook/flow/blob/master/lib/core.js
+# Node: https://github.com/facebook/flow/blob/master/lib/node.js
+# DOM: https://github.com/facebook/flow/blob/master/lib/dom.js
+# BOM: https://github.com/facebook/flow/blob/master/lib/bom.js
+# CSSOM: https://github.com/facebook/flow/blob/master/lib/cssom.js
+# IndexDB: https://github.com/facebook/flow/blob/master/lib/indexeddb.js
+
+[options]
+
+[version]
+0.34.0
