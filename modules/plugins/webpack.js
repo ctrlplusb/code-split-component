@@ -7,7 +7,12 @@
 import modulePathHash from '../utils/modulePathHash';
 import chunkNameHash from '../utils/chunkNameHash';
 
-function CodeSplitPlugin(options) {
+type Options = {
+  disabled?: boolean,
+  role: 'server'|'client',
+};
+
+function CodeSplitPlugin(options: Options) {
   this.options = options || {};
 }
 

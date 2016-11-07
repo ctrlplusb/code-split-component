@@ -14,12 +14,14 @@ function logError(err) {
 }
 
 function rehydrate() {
+  // $FlowFixMe
   if (!__webpack_require__) {
     console.log('code-split-component rehydration requires that your source is bundled with webpack.');
   }
 
   return new Promise((resolve) => {
     if (!window || !window[STATE_IDENTIFIER]) {
+      // No source state was provided, so resolve with nothing.
       resolve();
       return;
     }

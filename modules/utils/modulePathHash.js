@@ -2,6 +2,9 @@
 
 import md5 from 'md5';
 
+// This exists so that we can determinally resolve the webpack identifier for
+// a module based on it's absolute file path. Webpack otherwise just uses an
+// integer index which I have no idea how to get the mapping for.
 function modulePathHash(modulePath: string) : string {
   const cleansedPath = modulePath
     .replace(/[/\\]index\.jsx?$/, '')

@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint-disable react/no-unused-prop-types */
 
 import { Children, Component, PropTypes } from 'react';
 
@@ -7,7 +8,12 @@ class CodeSplitProvider extends Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
     context: PropTypes.object, // eslint-disable-line
-    state: PropTypes.arrayOf(PropTypes.object),
+    state: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        module: PropTypes.func.isRequired,
+      })
+    ),
   };
 
   // Context types

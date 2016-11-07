@@ -88,23 +88,26 @@ class CodeSplit extends Component {
   componentWillMount() {
     const { modules, moduleMap } = this.props;
     if (typeof modules === 'function') {
+      // Async modules.
       if (module.hot) {
         throw new Error(HMR_NOT_SUPPORTED);
       }
-
-      // Async modules.
-      const alreadyResolved =
-        Object.keys(moduleMap).length === Object.keys(this.getModules()).length;
+      const expectedModuleCount = Object.keys(moduleMap).length;
+      const actualModuleCount = Object.keys(this.getModules()).length;
+      const alreadyResolved = expectedModuleCount === actualModuleCount;
       if (!alreadyResolved) {
-        // Not all the modules have been resolved yet.
         this.setState({ resolving: true });
-        // Fire the fetch modules function.
+        // Fire the modules function, which will resolve the modules from
+        // the server. We provide our resolutionCallback to handle the response.
         modules(this.resolutionCallback);
       }
     } else if (moduleMap) {
       // Sync modules.
-      // We have a module map available. This probably means an SSR render is
-      // occurring, so lets register these modules.
+      // This is a sync execution and we have a module map available. This
+      // typically indicates that we are within a SSR render.
+      // Lets pass these modules to our resolutionCallback which will ensure
+      // that they are registered with our provider. Subsequently the state
+      // can be fetched and attached to the client response.
       this.resolutionCallback(modules);
     }
   }
@@ -115,10 +118,11 @@ class CodeSplit extends Component {
     registerChunkLoaded(chunkName);
     Object.keys(resolved).forEach((moduleName) =>
       registerModule(
-        moduleMap[moduleName], // id
-        resolved[moduleName] // module
+        moduleMap[moduleName], // module id
+        resolved[moduleName] // actual module
       )
     );
+    // The only use of this is to ensure that a render is triggered.
     this.setState({ resolving: false });
   }
 
@@ -143,6 +147,10 @@ class CodeSplit extends Component {
   })
 
   render() {
+    // It's possible for the render function to return a falsey value.
+    // e.g. ({ Foo }) => Foo && <Foo />
+    // So for these cases we need to make sure we do the || null in order to
+    // return a null instead of an actual "false" for the render result.
     return this.props.children(this.getModules()) || null;
   }
 }
