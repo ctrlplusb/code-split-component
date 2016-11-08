@@ -17,36 +17,30 @@ describe('babel plugin', () => {
   const targetPath = pathResolve(__dirname, './_data/codesplit.js');
 
   it('transpiles when enabled', () => {
-    const { code } = transformFileSync(targetPath, babelConfig());
-
     const expected =
 `<CodeSplit chunkName="bar" modules={resolvedModules => require.ensure([], require => resolvedModules({ Foo: require('./Foo') }), "bar")} moduleMap={{
   Foo: "${modulePathHash(pathResolve(__dirname, './_data/Foo'))}"
 }}>
   {({ Foo }) => Foo && <Foo />}
 </CodeSplit>;`;
-
+    const { code } = transformFileSync(targetPath, babelConfig());
     expect(code).toEqual(expected);
   });
 
   it('does not transpile when disabled', () => {
-    const { code } = transformFileSync(targetPath, babelConfig({ disabled: true }));
-
     const expected = readFileSync(targetPath, 'utf8');
-
+    const { code } = transformFileSync(targetPath, babelConfig({ disabled: true }));
     expect(`${code}\n`).toEqual(expected);
   });
 
   it('does not transpile "modules" when role="server"', () => {
-    const { code } = transformFileSync(targetPath, babelConfig({ role: 'server' }));
-
     const expected =
 `<CodeSplit chunkName="bar" modules={{ Foo: require('./Foo') }} moduleMap={{
   Foo: "${modulePathHash(pathResolve(__dirname, './_data/Foo'))}"
 }}>
   {({ Foo }) => Foo && <Foo />}
 </CodeSplit>;`;
-
+    const { code } = transformFileSync(targetPath, babelConfig({ role: 'server' }));
     expect(code).toEqual(expected);
   });
 });
