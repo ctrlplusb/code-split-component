@@ -30,16 +30,18 @@ This library consists of a set of React components, a Webpack plugin, and a Babe
 
 ## Demo
 
-Here is an example of react-universally, an SSR starter kit that makes use of this library:
+Here is a live deployment of react-universally, an SSR starter kit that makes use of this library:
 
-https://react-universally-jjnlcdmaxy.now.sh
+https://react-universally-gydkwwudrb.now.sh
+
+Check the network tab to see it in action. :)
 
 ## Installation
 
 Note: this library is in alpha status on the v2 rewrite.  Although it's alpha I highly recommend that you install the latest alpha.  The v1 API is considered inefficient and has been deprecated.
 
 ```
-npm install code-split-component@2.0.0-alpha.2 --save
+npm install code-split-component@2.0.0-alpha.3 --save
 ```
 
 ## Configuration
@@ -70,11 +72,11 @@ And then add the Babel plugin to your `.babelrc` like so:
 
 __Hot Module Reloading__
 
-These plugins do not play nicely with the hot module reloading feature of Webpack.  This doesn't mean that you can't use `code-split-component`, but rather that you should set the plugins as being disabled for your development environment.
+These plugins do not play nicely with the hot module reloading feature of Webpack.  This doesn't mean that you can't use `code-split-component`, but rather that you should disable the plugins for your development environment.  You can do this in two ways, either you exclude the plugins from your Webpack/Babel configuration, or you set the `disabled` option within each plugin to `true`.
 
-This means that for your development builds the `CodeSplit` instances will run synchronously, whilst your production builds will still have all the code splitting optimisation that you desire.  Try to see code splitting as a production optimisation (like gzipping or minifying your code), rather than something that is required in development.
+When you do this the `CodeSplit` instances will run synchronously, whilst your production builds will still have all the code splitting optimisation that you desire.  Code splitting is essentially a production optimisation (like gzipping or minifying your code), rather than something that is required for development.
 
-To do this firstly modify your Webpack configuration to look something similar to:
+Below is an example of how to use the `disabled` options on each of the respective plugins::
 
 ```js
 import CodeSplitWebpackPlugin from 'code-split-component/webpack';
@@ -171,13 +173,13 @@ Finally, as a child to the `CodeSplit` instance you need to provide a render fun
 
 ## Server Side Rendering Usage
 
-To use this library within a SSR application it is required that you use Webpack to bundle both the client and server (or at least the universal middleware used to render your React application).  This is because this library relies on API features only available within a Webpack bundle context in order to dynamically track/load the chunks/modules.
+To use this library within a SSR application it is required that you use Webpack to bundle both the client and server.  This is because this module and it's plugins relies on API features that are only made available within a Webpack bundle context.
 
-You are typically going to have two sets of configurations.  A client and server configuration.  
+Okay, with that being said you will generally have two sets of Webpack/Babel configurations: for the client and server.  
 
 ### Client configuration
 
-You can set up your client exactly as shown in the ["Usage"](https://github.com/ctrlplusb/code-split-component#usage) section above, however there is one small modification required.  The server bundle will typically return a response that contains a state object indicating which chunks/modules were used whilst server rendering your application.  We want to make sure that we bootstrap our client so that it starts with the same expected chunks/modules ready and loaded.
+You can set up your client exactly as shown in the ["Usage"](https://github.com/ctrlplusb/code-split-component#usage) section above, however there is one small modification required.  The server bundle will typically return a response that will include a `window` bound state object indicating which of the chunks/modules were used whilst server rendering a specific HTTP request.  We need to make sure that we use the provided state to bootstrap our client application so that it starts with the same expected chunks/modules required to full represent the server rendered React application.
 
 To do this we make use of the `rehydrateState` API function (see the docs above).  Here is an example of this:
 
@@ -196,13 +198,13 @@ rehydrateState().then(codeSplitState =>
 );
 ```
 
-That is the only difference compared to a client-only configuration.
+That is the only required change compared to a client-only configuration.
 
 ### Server configuration
 
-As stated above it is a requirement that your server bundle (or at least the universal middleware used to render your React application) is bundled using Webpack.
+As stated above it is a requirement that your server bundle is bundled using Webpack.
 
-Within your server's configuration you need to make sure it includes both the provided Webpack and Babel plugins.  The Webpack plugin can use the standard/default options, however, the Babel plugin needs to be configured slightly differently for the server bundle.  Specifically, you need to to make sure you set the "role" option for the plugin to "server".
+Within your server's bundling configuration you need to make sure that it includes both the provided Webpack and Babel plugins.  The Webpack plugin can use the standard/default options, however, the Babel plugin needs to be configured slightly differently for the server bundle.  Specifically, you need to to make sure you set the value of the `mode` option for the plugin to `"server"`.
 
 Below is an example Webpack configuration, within which we have provided the Babel options directly to the babel-loader.  This then demonstrates the full configuration requirements for a server bundle:
 
@@ -222,7 +224,7 @@ const webpackConfig = {
           plugins: [
             // Our babel plugin.
             ['code-split-component/babel', {
-              role: 'server' // IMPORTANT!
+              mode: 'server' // IMPORTANT for the server bundle! Not needed for the client bundle.
             }]
           ]
         }
@@ -232,9 +234,9 @@ const webpackConfig = {
 }
 ```
 
-As you can see above the important bit is setting `role='server'`.  Setting this value ensures that our `CodeSplit` instances are resolved synchronously so that we get a "full render" result for each server request.  This is technically the only difference in the Webpack/Babel plugin configurations between the client and server.
+As you can see above the important bit is setting `mode='server'`.  Setting this value ensures that our `CodeSplit` instances will be synchronously resolved and rendered on the server so that we get a "full render" result for each HTTP request.  This is technically the only difference in the Webpack/Babel plugin configurations between the client and server.
 
-Ok, with the configuration complete you need to update your middleware used to render the application to be similar to the following:
+Ok, with the configuration complete you need to update your middleware used to render the React application to be similar to the following:
 
 ```jsx
 import { CodeSplitProvider, createRenderContext, STATE_IDENTIFIER } from 'code-split-component';
@@ -277,19 +279,21 @@ That's it. You can use the standard `CodeSplit` component API, even for an SSR a
 
 ### Going one step further - a nice optimisation.
 
-When doing a server render it is possible to calculate and embed all the required script/style tags for each chunk that was loaded for a request.  This would then allow our client to be asynchronously download the required chunk scripts/styles whilst the JS is being parsed.
+When doing a server render it is possible to calculate and embed all the required script/style tags representing each chunk that was used when servicing an HTTP request.  This would then allow the user's browser to asynchronously (and in parallel) download the chunk scripts/styles whilst the JS is being parsed by the browser.  This results in a nice little extra performance gain if you are after such things. :)
 
-This isn't a requirement, our `rehydrateState` function does take of fetching any chunk files that need to be fetched, however it could translate to some nice little performance wins.
+This isn't a requirement of course, the `rehydrateState` helper will make sure all the required chunk files are fetched.
 
-The [`assets-webpack-plugin`](https://github.com/kossnocorp/assets-webpack-plugin) can used to help us achieve this.  This plugin outputs a JSON file that represents each chunk included within our bundle along with the paths to the associated js/css files for each chunk.  When combining this with the `.getState()` call on our render context we can marry up the loaded bundles to this JSON file in order to determine which js/css files we should include.
+If you are interested in the additional performance gain, you could do something like the following:
 
-I am not going to provide example code here, but my [`react-universally`](https://github.com/ctrlplusb/react-universally/blob/master/src/universalMiddleware/index.js) start kit contains an example of this optimisation.
+The [`assets-webpack-plugin`](https://github.com/kossnocorp/assets-webpack-plugin) outputs a JSON file that details all of the chunks for a Webpack build.  We could use this information along with the code split render context to resolve the paths to the js/css files that we should include for the HTTP request being serviced.
+
+I am not going to provide a full code example code here, but the [`react-universally`](https://github.com/ctrlplusb/react-universally/blob/master/src/server/middleware/reactApplication/generateHTML.js#L67) starter kit contains an example of this optimisation.
 
 The solution is quite trivial when you see it. :)
 
 ### Full SSR Example
 
-SSR is always quite an involved process.  I highly recommend that you check out my [`react-universally`](https://github.com/ctrlplusb/react-universally) starter kit to get a full featured reference implementation.
+SSR is always quite an involved process.  I highly recommend that you check out the [`react-universally`](https://github.com/ctrlplusb/react-universally) starter kit to get a full featured reference implementation.
 
 ## API
 
@@ -313,14 +317,14 @@ We will demonstrate the full API for the Babel plugin via the following `.babelr
       "disabled": false,
 
       // This is useful when using the plugin in a "server side rendering" context.
-      // For your server bundle / universal react app middleware you need to specify
-      // this value as being "server".  This will ensure that server side rendering
-      // will asynchronously execute, allowing us to get as much out of our server
-      // render as possible.  
+      // For your server bundle you need to specify this value as being "server".  
+      // This will ensure that server side rendering will synchronously execute, 
+      // allowing us to get as much out of our server render as possible.  
       // NOTE: It isn't good enough to just set "disabled: true" for the server
-      // builds as there are other important mechanisms of the plugin that we will
-      // use for client side state rehydration.
-      "role": "client"
+      // builds as there are other important mechanisms of the plugin that we 
+      // need to be able to support rehydrating of the code split state on the
+      // client.
+      "mode": "client"
     }]
   ]
 }
@@ -328,7 +332,7 @@ We will demonstrate the full API for the Babel plugin via the following `.babelr
 
 ### Webpack Plugin
 
-The Webpack plugin modifies the Webpack bundling system to allow us to much more easily track/resolve chunks and their respective modules - a requirement for getting our code split components to work.
+The Webpack plugin allow us to more resolve the chunks and modules generated by Webpack.
 
 To use the Webpack plugin you need to import it and then pass a new'ed up instance to your Webpack configuration.  We'll demo the full API within the following Webpack configuration snippet, containing the default values assigned to each option.
 
@@ -359,7 +363,7 @@ We will demonstrate the full API of the `CodeSplit` component via the following 
 import { CodeSplit } from 'code-split-component';
 
 return (
-  <CodeSplit chunkName="home" modules={{ Home: require('./Home') }}>
+  <CodeSplit chunkName="home" modules={{ Home: require('./Home') }} defer={false}>
     {
       function render(modules) {
         const { Home } = modules;
@@ -379,10 +383,11 @@ Here is a break down of each prop:
     - `key` - The identifier used to reference the resolved module within the render function.
     - `value` - A `require` statement containing a `string` literal path to the module you would like to include. Important: You can only provide a string literal as Webpack needs to be able to do static analysis to figure out which modules need to be code split into separate chunks.
   - __`children`__ (function, __required__) - The function used to receive the resolved modules and produce the render result.  It is provided a single parameter - an object which is structurally equivalent to the value provided in the `modules` prop.  This will contain all the resolved modules. If a module has not yet been resolved from the server it will contain a `null` value, otherwise it will contain the actual module.  So make sure you always check for nulls.  You can in those cases return nothing or for example a `<Loading />` component.  The function must return one of the following: a React element, `null`, `undefined`, or `false`.
+  - __`defer`__ (boolean, __optional__) - This flag is only useful when you have a server side rendered React application.  Setting this flag to `true` will indicate to the server that it should not resolve and render the specific `CodeSplit` instance, and that rendering should instead be deferred to the browser render.  This can be a good optimisation strategy to avoid rendering sub sections of your application that have a heavy dependency on javascript powered controls - a server rendered app produces UI fast, but until the JS is fully parsed by the browser the JS dependant controls won't be useable.  Therefore deferring parts of your application can be a wise decision.  You will still get a rendered shell which will give the user a good perceived performance.
 
 ### `CodeSplitProvider`
 
-Tracks and manages the required code split state for the `CodeSplit` instances.  This needs to be close to the root level of your application, wrapping your application component.
+Tracks and manages the required code split state for the `CodeSplit` instances.  This needs to be close to the root level of your application, wrapping your React application component.
 
 We will demonstrate the full API of the `CodeSplit` component via the following example:
 
