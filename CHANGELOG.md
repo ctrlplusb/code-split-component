@@ -2,6 +2,22 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.0-alpha.3] - 2016-12-08
+
+### Breaking Changes
+
+Renames the "role" option on the babel plugin to "mode".
+
+### Changes
+
+Adds some tests for the most complex/critical elements of this package.
+
+Adds a new "defer" prop to the CodeSplit component. This is a boolean flag. If it is `true` then the respective component will NOT be rendered within server side renders, instead deferring to asynchronous resolving and rendering on the client.
+
+Rewrites the webpack plugin so that it no longer creates new ids for modules and chunks, and rather binds a mapping object to the globals.  This allows for a greater degree of interop with other webpack plugins and also provides some nice bundle size savings, especially for larger bundles.
+
+Adds serialize-javascript as a peer dependency.
+
 ## [2.0.0-alpha.2] - 2016-11-07
 
 ### Fixed
