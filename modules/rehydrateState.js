@@ -36,10 +36,11 @@ export default function rehydrateState() {
 
     const safelyFetchChunk = (chunkName : string) => {
       try {
-        __webpack_require__.e(moduleChunkMap.chunks[chunkName]);
+        return __webpack_require__.e(moduleChunkMap.chunks[chunkName]);
       } catch (err) {
         // We swallow the error. It's possible an active webpack plugin did
         // some "shifting around" of our chunks.
+        return false;
       }
     };
 
