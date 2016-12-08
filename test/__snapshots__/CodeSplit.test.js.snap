@@ -1,0 +1,11 @@
+exports[`CodeSplit client asynchronously renders 1`] = `null`;
+
+exports[`CodeSplit client asynchronously renders 2`] = `null`;
+
+exports[`CodeSplit client asynchronously renders 3`] = `"<div>poop</div>"`;
+
+exports[`CodeSplit defers rendering on server when defer prop set 1`] = `null`;
+
+exports[`CodeSplit not transpiled synchronously renders 1`] = `<PoopModule />`;
+
+exports[`CodeSplit server synchronously renders 1`] = `<PoopModule />`;

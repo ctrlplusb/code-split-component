@@ -12,7 +12,7 @@
 [libs]
 
 # Official "flow-typed" repository definitions.
-flow-typed/npm
+flow-typed/npm/
 
 # Custom definitions.
 tools/flow/definitions/
@@ -30,4 +30,4 @@ tools/flow/definitions/
 [options]
 
 [version]
-0.34.0
+0.36.0

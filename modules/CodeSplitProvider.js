@@ -1,5 +1,4 @@
 /* @flow */
-/* eslint-disable react/no-unused-prop-types */
 
 import { Children, Component, PropTypes } from 'react';
 
@@ -12,7 +11,7 @@ class CodeSplitProvider extends Component {
       PropTypes.shape({
         id: PropTypes.string.isRequired,
         module: PropTypes.func.isRequired,
-      })
+      }),
     ),
   };
 
@@ -49,14 +48,14 @@ class CodeSplitProvider extends Component {
     }
   }
 
-  registerModule = (id: string, module: Function) => {
-    this.modules[id] = module;
+  registerModule = (moduleHash: string, module: Function) => {
+    this.modules[moduleHash] = module;
     if (this.props.context) {
-      this.props.context.registerModule(id);
+      this.props.context.registerModule(moduleHash);
     }
   }
 
-  retrieveModule = (id: string) => this.modules[id];
+  retrieveModule = (moduleHash: string) => this.modules[moduleHash];
 
   render() {
     return Children.only(this.props.children);

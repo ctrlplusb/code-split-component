@@ -1,7 +1,6 @@
-const transformFileSync = require('babel-core').transformFileSync;
-const pathResolve = require('path').resolve;
-const modulePathHash = require('../../modules/utils/modulePathHash').default;
-const readFileSync = require('fs').readFileSync;
+import { transformFileSync } from 'babel-core';
+import { resolve as pathResolve } from 'path';
+import { modulePathHash } from '../../modules/utils';
 
 const babelConfig = options => ({
   babelrc: false,
@@ -16,31 +15,26 @@ const babelConfig = options => ({
 describe('babel plugin', () => {
   const targetPath = pathResolve(__dirname, './_data/codesplit.js');
 
-  it('transpiles when enabled', () => {
-    const expected =
-`<CodeSplit chunkName="bar" modules={resolvedModules => require.ensure([], require => resolvedModules({ Foo: require('./Foo') }), "bar")} moduleMap={{
-  Foo: "${modulePathHash(pathResolve(__dirname, './_data/Foo'))}"
-}}>
-  {({ Foo }) => Foo && <Foo />}
-</CodeSplit>;`;
+  it('transpiles', () => {
     const { code } = transformFileSync(targetPath, babelConfig());
-    expect(code).toEqual(expected);
+    const expectedModuleHash = modulePathHash(pathResolve(__dirname, './_data/Foo'));
+    expect(code).toContain(`Foo: "${expectedModuleHash}"`);
+    expect(code).toMatchSnapshot();
   });
 
   it('does not transpile when disabled', () => {
-    const expected = readFileSync(targetPath, 'utf8');
-    const { code } = transformFileSync(targetPath, babelConfig({ disabled: true }));
-    expect(`${code}\n`).toEqual(expected);
+    const { code } = transformFileSync(
+      targetPath,
+      babelConfig({ disabled: true }),
+    );
+    expect(code).toMatchSnapshot();
   });
 
-  it('does not transpile "modules" when role="server"', () => {
-    const expected =
-`<CodeSplit chunkName="bar" modules={{ Foo: require('./Foo') }} moduleMap={{
-  Foo: "${modulePathHash(pathResolve(__dirname, './_data/Foo'))}"
-}}>
-  {({ Foo }) => Foo && <Foo />}
-</CodeSplit>;`;
-    const { code } = transformFileSync(targetPath, babelConfig({ role: 'server' }));
-    expect(code).toEqual(expected);
+  it('does not transpile "modules" when mode="server"', () => {
+    const { code } = transformFileSync(
+      targetPath,
+      babelConfig({ mode: 'server' }),
+    );
+    expect(code).toMatchSnapshot();
   });
 });

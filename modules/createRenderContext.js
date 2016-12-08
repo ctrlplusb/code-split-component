@@ -1,6 +1,6 @@
 /* @flow */
 
-function createRenderContext() {
+export default function createRenderContext() {
   const chunks = new Set();
   const modules = new Set();
 
@@ -20,5 +20,3 @@ function createRenderContext() {
     getState,
   };
 }
-
-export default createRenderContext;

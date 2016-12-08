@@ -11,7 +11,10 @@
     "test": "jest",
     "lint": "eslint modules",
     "build": "cross-env BABEL_ENV=commonjs babel ./modules -d ./commonjs",
-    "prepublish": "npm run lint && npm run test && npm run build"
+    "prepublish": "npm run lint && npm run test && npm run build",
+    "flow": "flow",
+    "flow:defs": "flow-typed install -f 0.36 --overwrite",
+    "flow:report": "flow-coverage-report -i 'modules/**/*.js' -t html -t json -t text"
   },
   "files": [
     "commonjs",
@@ -35,39 +38,49 @@
     "url": "https://github.com/ctrlplusb/code-split-component/issues"
   },
   "homepage": "https://github.com/ctrlplusb/code-split-component#readme",
-  "nyc": {
-    "sourceMap": false,
-    "instrument": false
+  "jest": {
+    "snapshotSerializers": [
+      "<rootDir>/node_modules/enzyme-to-json/serializer"
+    ]
   },
   "devDependencies": {
     "app-root-path": "^2.0.1",
-    "babel-cli": "^6.14.0",
-    "babel-core": "^6.18.2",
-    "babel-eslint": "^7.1.0",
-    "babel-plugin-transform-class-properties": "^6.18.0",
-    "babel-preset-latest": "^6.14.0",
-    "babel-preset-react": "^6.11.1",
+    "babel-cli": "^6.18.0",
+    "babel-core": "6.18.2",
+    "babel-eslint": "^7.1.1",
+    "babel-jest": "^17.0.2",
+    "babel-plugin-transform-class-properties": "^6.19.0",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-latest": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
     "babel-register": "^6.18.0",
     "cross-env": "^3.1.3",
-    "enzyme": "^2.5.1",
-    "eslint": "^3.9.1",
-    "eslint-config-airbnb": "^12.0.0",
-    "eslint-plugin-flowtype": "^2.25.0",
-    "eslint-plugin-import": "^1.16.0",
-    "eslint-plugin-jsx-a11y": "^2.2.3",
-    "eslint-plugin-react": "^6.5.0",
-    "flow-bin": "^0.34.0",
-    "jest": "^16.0.2",
-    "jest-cli": "^16.0.2",
-    "react": "^15.3.2",
+    "enzyme": "^2.6.0",
+    "enzyme-to-json": "1.4.4",
+    "eslint": "^3.11.1",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-flowtype": "^2.29.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "2.2.3",
+    "eslint-plugin-react": "6.8.0",
+    "flow-bin": "^0.36.0",
+    "flow-coverage-report": "^0.2.0",
+    "jest": "^17.0.3",
+    "jest-cli": "^17.0.3",
+    "memory-fs": "0.4.1",
+    "react": "^15.4.1",
+    "react-addons-test-utils": "^15.4.1",
+    "react-dom": "^15.4.1",
     "rimraf": "^2.5.4",
-    "webpack": "^2.1.0-beta.25"
+    "webpack": "2.1.0-beta.27"
   },
   "peerDependencies": {
     "babel-template": "^6.16.0",
-    "react": "^0.14.0 || ^15.0.0"
+    "react": "^0.14.0 || ^15.0.0",
+    "serialize-javascript": "^1.3.0"
   },
   "dependencies": {
+    "invariant": "^2.2.1",
     "md5": "^2.2.1"
   }
 }

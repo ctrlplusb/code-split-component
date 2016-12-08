@@ -4,7 +4,7 @@
 
 import template from 'babel-template';
 import nodePath from 'path';
-import modulePathHash from '../utils/modulePathHash';
+import { modulePathHash } from '../utils';
 
 // -----------------------------------------------------------------------------
 // PRIVATES
@@ -100,23 +100,43 @@ function codeSplitBabelPlugin({ types: t }) {
           path.node.openingElement.attributes.push(
             t.jSXAttribute(
               t.jSXIdentifier('moduleMap'),
-              t.jSXExpressionContainer(t.objectExpression(moduleMapProperties))
-            )
+              t.jSXExpressionContainer(t.objectExpression(moduleMapProperties)),
+            ),
           );
 
           // -------------------------------------------------------------------
-          // Convert the modules into our required async format
+          // Transpile the modules prop into the async format
 
-          if (state.opts.role !== 'server') {
+          if (state.opts.mode !== 'server') {
             // For a server we don't want to transpile the modules into
             // asynchronous code.  They'll need to be executed synchronously.
             modulesProp.value = t.jSXExpressionContainer(
               modulesTemplate({
                 REQUIRES: t.objectExpression(modulesProp.value.expression.properties),
                 CHUNKNAME: t.stringLiteral(chunkNameProp.value.value),
-              }).expression
+              }).expression,
             );
           }
+
+          // -------------------------------------------------------------------
+          // Add the mode prop
+
+          path.node.openingElement.attributes.push(
+            t.jSXAttribute(
+              t.jSXIdentifier('mode'),
+              t.jSXExpressionContainer(t.stringLiteral(state.opts.mode || 'client')),
+            ),
+          );
+
+          // -------------------------------------------------------------------
+          // Add the transpiled prop
+
+          path.node.openingElement.attributes.push(
+            t.jSXAttribute(
+              t.jSXIdentifier('transpiled'),
+              t.jSXExpressionContainer(t.booleanLiteral(true)),
+            ),
+          );
         }
       },
     },

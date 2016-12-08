@@ -1,0 +1,21 @@
+exports[`babel plugin does not transpile "modules" when mode="server" 1`] = `
+"<CodeSplit chunkName=\"bar\" modules={{ Foo: require(\'./Foo\') }} moduleMap={{
+  Foo: \"d47ebf7d0291\"
+}} mode={\"server\"} transpiled={true}>
+  {({ Foo }) => Foo && <Foo />}
+</CodeSplit>;"
+`;
+
+exports[`babel plugin does not transpile when disabled 1`] = `
+"<CodeSplit chunkName=\"bar\" modules={{ Foo: require(\'./Foo\') }}>
+  {({ Foo }) => Foo && <Foo />}
+</CodeSplit>;"
+`;
+
+exports[`babel plugin transpiles 1`] = `
+"<CodeSplit chunkName=\"bar\" modules={resolvedModules => require.ensure([], require => resolvedModules({ Foo: require(\'./Foo\') }), \"bar\")} moduleMap={{
+  Foo: \"d47ebf7d0291\"
+}} mode={\"client\"} transpiled={true}>
+  {({ Foo }) => Foo && <Foo />}
+</CodeSplit>;"
+`;
