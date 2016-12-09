@@ -1,6 +1,6 @@
 {
   "name": "code-split-component",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "description": "Declarative code splitting for your Wepback 2 bundled React projects, with SSR support.",
   "main": "commonjs/index.js",
   "engines": {

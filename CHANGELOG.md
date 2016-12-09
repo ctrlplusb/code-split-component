@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.0-alpha.3] - 2016-12-09
+
+### Fixed
+
+Refactors the Webpack plugin so that it no longer breaks sourcemaps.
+
 ## [2.0.0-alpha.3] - 2016-12-08
 
 ### Breaking Changes
