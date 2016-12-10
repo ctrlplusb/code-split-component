@@ -41,7 +41,7 @@ Check the network tab to see it in action. :)
 Note: this library is in alpha status on the v2 rewrite.  Although it's alpha I highly recommend that you install the latest alpha.  The v1 API is considered inefficient and has been deprecated.
 
 ```
-npm install code-split-component@2.0.0-alpha.3 --save
+npm install code-split-component@2.0.0-alpha.4 --save
 ```
 
 ## Configuration
