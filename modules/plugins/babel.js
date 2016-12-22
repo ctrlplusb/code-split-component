@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable new-cap */
 /* eslint-disable-line no-param-reassign */
+/* eslint-disable import/no-extraneous-dependencies */
 
 import template from 'babel-template';
 import nodePath from 'path';

@@ -11,7 +11,6 @@
 // https://github.com/webpack/docs/wiki/How-to-write-a-plugin
 // https://webpack.github.io/docs/api-in-modules.html
 
-import serialize from 'serialize-javascript';
 import { modulePathHash } from '../utils';
 import { MODULE_CHUNK_MAPPING_IDENTIFIER } from '../constants';
 
@@ -55,7 +54,7 @@ CodeSplitPlugin.prototype.apply = function apply(compiler) {
           // generally returns a value so we have to keep all of this in
           // expression format.
           `(function exposeCodeSplitWebpackRegistry() {
-              const registry = ${serialize(codeSplitWebpackRegistry)};
+              const registry = ${JSON.stringify(codeSplitWebpackRegistry)};
               if (typeof global !== 'undefined') {
                 global.${MODULE_CHUNK_MAPPING_IDENTIFIER} = registry;
               } else if (typeof window !== 'undefined') {
