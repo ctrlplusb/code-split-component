@@ -14,15 +14,15 @@ export default function rehydrateState() {
       // Has this source been bundled by webpack, making the following global
       // available?
       // $FlowFixMe
-      !__webpack_require__
+      typeof __webpack_require__ === 'undefined'
       // Running in the browser?
-      || !window
+      || typeof window === 'undefined'
       // Has the rehydrate state been bound to the window object?
-      || !window[STATE_IDENTIFIER]
+      || typeof window[STATE_IDENTIFIER] === 'undefined'
       // Has the module/chunk mapping been bound to the window object? If not
       // there is no point continuing as we won't know how to map the
       // moduleHash's to the correct webpack identifiers.
-      || !window[MODULE_CHUNK_MAPPING_IDENTIFIER]
+      || typeof window[MODULE_CHUNK_MAPPING_IDENTIFIER] === 'undefined'
       ) {
       // Should we warn the user?  If they are using the rehydrateState
       // function perhaps they are expecting it to actually do some
