@@ -73,9 +73,9 @@ CodeSplitPlugin.prototype.apply = function apply(compiler) {
         if (module.id !== null && module.libIdent) {
           const shouldRegisterModule =
             // We aren't interested in registering the node modules.
-            module.resource.indexOf('node_modules') === -1
+            module.resource && module.resource.indexOf('node_modules') === -1
             // Or modules that are empty.
-            && module.chunks.length > 0;
+            && module.chunks && module.chunks.length > 0;
           if (shouldRegisterModule) {
             registerModule(module.id, modulePathHash(module.resource));
           }

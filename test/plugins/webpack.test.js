@@ -11,10 +11,12 @@ describe('webpack plugin', () => {
     // First compile:
     return new Promise((resolve) => {
       const entryFilePath = path.resolve(__dirname, './_data/webpack/one.js');
+      const entryFilePathOther = path.resolve(__dirname, './_data/webpack/other.js');
       const compiler = webpack({
         target: 'node',
         entry: {
           one: entryFilePath,
+          other: entryFilePathOther,
         },
         output: {
           path: '/output',
@@ -37,7 +39,8 @@ describe('webpack plugin', () => {
       const chunkFiles = fs.readdirSync('/output');
       expect(chunkFiles).toContain('one.js');
       expect(chunkFiles).toContain('two.js');
-      expect(chunkFiles).toHaveLength(2);
+      expect(chunkFiles).toContain('other.js');
+      expect(chunkFiles).toHaveLength(3);
 
       // We need to interpret the output entry file so that the
       // codeSplitWebpackRegistry gets bound to "global".
@@ -48,14 +51,16 @@ describe('webpack plugin', () => {
         modules: {
           [modulePathHash(path.resolve(__dirname, './_data/webpack/one.js'))]: 1,
           [modulePathHash(path.resolve(__dirname, './_data/webpack/two.js'))]: 0,
+          [modulePathHash(path.resolve(__dirname, './_data/webpack/other.js'))]: 2,
         },
         chunks: {
+          one: 2,
           two: 0,
-          one: 1,
+          other: 1,
         },
       };
       expect(global[MODULE_CHUNK_MAPPING_IDENTIFIER]).toBeDefined();
-      expect(global[MODULE_CHUNK_MAPPING_IDENTIFIER]).toEqual(expected);
+      expect(global[MODULE_CHUNK_MAPPING_IDENTIFIER]).toMatchObject(expected);
     });
   });
 });
