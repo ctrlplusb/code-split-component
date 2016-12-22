@@ -41,7 +41,7 @@ Check the network tab to see it in action. :)
 Note: this library is in alpha status on the v2 rewrite.  Although it's alpha I highly recommend that you install the latest alpha.  The v1 API is considered inefficient and has been deprecated.
 
 ```
-npm install code-split-component@2.0.0-alpha.4 --save
+npm install code-split-component@2.0.0-alpha.5 --save
 ```
 
 ## Configuration
@@ -318,10 +318,10 @@ We will demonstrate the full API for the Babel plugin via the following `.babelr
 
       // This is useful when using the plugin in a "server side rendering" context.
       // For your server bundle you need to specify this value as being "server".  
-      // This will ensure that server side rendering will synchronously execute, 
+      // This will ensure that server side rendering will synchronously execute,
       // allowing us to get as much out of our server render as possible.  
       // NOTE: It isn't good enough to just set "disabled: true" for the server
-      // builds as there are other important mechanisms of the plugin that we 
+      // builds as there are other important mechanisms of the plugin that we
       // need to be able to support rehydrating of the code split state on the
       // client.
       "mode": "client"

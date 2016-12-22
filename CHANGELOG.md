@@ -2,47 +2,57 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.0-alpha.5] - 2016-12-22
+
+### Fixed
+
+ - Adds some resilience to webpack plugin.
+
+### Changed
+
+ - Removes serialize-javascript as a dependency.
+ - Updates dependencies, including webpack to the latest RC.
+ - Adds webpack as peer dependency.
+ - Changes babel-template peer dependency to babel-core.
+ - Changes the way rehydrateState checks for required global props.
+
 ## [2.0.0-alpha.4] - 2016-12-09
 
 ### Fixed
 
-Refactors the Webpack plugin so that it no longer breaks sourcemaps.
+ - Refactors the Webpack plugin so that it no longer breaks sourcemaps.
 
 ## [2.0.0-alpha.3] - 2016-12-08
 
 ### Breaking Changes
 
-Renames the "role" option on the babel plugin to "mode".
+ - Renames the "role" option on the babel plugin to "mode".
 
 ### Changes
 
-Adds some tests for the most complex/critical elements of this package.
-
-Adds a new "defer" prop to the CodeSplit component. This is a boolean flag. If it is `true` then the respective component will NOT be rendered within server side renders, instead deferring to asynchronous resolving and rendering on the client.
-
-Rewrites the webpack plugin so that it no longer creates new ids for modules and chunks, and rather binds a mapping object to the globals.  This allows for a greater degree of interop with other webpack plugins and also provides some nice bundle size savings, especially for larger bundles.
-
-Adds serialize-javascript as a peer dependency.
+ - Adds some tests for the most complex/critical elements of this package.
+ - Adds a new "defer" prop to the CodeSplit component. This is a boolean flag. If it is `true` then the respective component will NOT be rendered within server side renders, instead deferring to asynchronous resolving and rendering on the client.
+ - Rewrites the webpack plugin so that it no longer creates new ids for modules and chunks, and rather binds a mapping object to the globals.  This allows for a greater degree of interop with other webpack plugins and also provides some nice bundle size savings, especially for larger bundles.
+ - Adds serialize-javascript as a peer dependency.
 
 ## [2.0.0-alpha.2] - 2016-11-07
 
 ### Fixed
 
-Issues created when a chunk id is a negative number.
+ - Issues created when a chunk id is a negative number.
 
 ## [2.0.0-alpha.0] - 2016-11-07
 
 ### Breaking Changes
 
-Complete rewrite! Read the docs. :)
+ - Complete rewrite! Read the docs. :)
 
 ## [1.0.1] - 2016-11-02
 
 ### Changed
 
-Updates dependencies.
-
-Changes the engines config in package.json.
+ - Updates dependencies.
+ - Changes the engines config in package.json.
 
 ## [1.0.0] - 2016-10-14
 
