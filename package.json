@@ -77,7 +77,7 @@
   "peerDependencies": {
     "babel-core": "^6.21.0",
     "react": "^0.14.0 || ^15.0.0",
-    "webpack": "^2.2.0-rc.1"
+    "webpack": "^1.0.0 || ^2.2.0-rc.1"
   },
   "dependencies": {
     "invariant": "^2.2.1",
