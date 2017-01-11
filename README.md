@@ -35,7 +35,7 @@ This library consists of a set of React components, a Webpack plugin, and a Babe
 
 Here is a live deployment of react-universally, an SSR starter kit that makes use of this library:
 
-https://react-universally-gydkwwudrb.now.sh
+https://react-universally.now.sh
 
 Check the network tab to see it in action. :)
 
