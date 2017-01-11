@@ -30,8 +30,12 @@ export const ensureES6Safe = (x : ResolveModules) => () => {
  */
 export const modulePathHash = (modulePath: string) => {
   const cleansedPath = modulePath
+    // remove index files as they would be equivalent to just the folder specified
     .replace(/[/\\]index\.jsx?$/, '')
-    .replace(/.jsx?$/, '');
+    // remove any extension
+    .replace(/.jsx?$/, '')
+    // We don't want base path as it changes per environment.
+    .replace(process.cwd(), '');
   // This _should_ be enough of the hash for uniqueness.
   // Anything more starts to pump up the bundle sizes.
   return md5(cleansedPath).substr(0, 12);
