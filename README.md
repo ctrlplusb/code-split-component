@@ -2,6 +2,11 @@
 
 Declarative code splitting for your Wepback bundled React projects, with SSR support.
 
+[![npm](https://img.shields.io/npm/v/code-split-component.svg?style=flat-square)](http://npm.im/code-split-component)
+[![MIT License](https://img.shields.io/npm/l/code-split-component.svg?style=flat-square)](http://opensource.org/licenses/MIT)
+[![Travis](https://img.shields.io/travis/ctrlplusb/code-split-component.svg?style=flat-square)](https://travis-ci.org/ctrlplusb/code-split-component)
+[![Codecov](https://img.shields.io/codecov/c/github/ctrlplusb/code-split-component.svg?style=flat-square)](https://codecov.io/github/ctrlplusb/code-split-component)
+
 ```jsx
 
 import { CodeSplit } from 'code-split-component';
@@ -10,8 +15,6 @@ import { CodeSplit } from 'code-split-component';
   { ({ Foo }) => Foo && <Foo /> }
 </CodeSplit>
 ```
-
----
 
 ## TOCs
 

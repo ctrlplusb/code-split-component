@@ -87,7 +87,7 @@ class CodeSplit extends Component {
     const { chunkName, moduleMap } = this.props;
     const { registerChunkLoaded, registerModule } = this.context;
     registerChunkLoaded(chunkName);
-    Object.keys(resolved).forEach((moduleName) =>
+    Object.keys(resolved).forEach(moduleName =>
       registerModule(
         moduleMap[moduleName], // module hash
         resolved[moduleName], // actual module

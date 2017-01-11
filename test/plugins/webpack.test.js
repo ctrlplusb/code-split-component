@@ -1,8 +1,8 @@
 import webpack from 'webpack';
 import MemoryFS from 'memory-fs';
 import path from 'path';
-import { modulePathHash } from '../../modules/utils';
-import { MODULE_CHUNK_MAPPING_IDENTIFIER } from '../../modules/constants';
+import { modulePathHash } from '../../src/utils';
+import { MODULE_CHUNK_MAPPING_IDENTIFIER } from '../../src/constants';
 
 describe('webpack plugin', () => {
   it.only('works', () => {
@@ -25,7 +25,7 @@ describe('webpack plugin', () => {
           libraryTarget: 'var',
         },
         plugins: [
-          new (require('../../modules/plugins/webpack'))(),
+          new (require('../../src/plugins/webpack'))(),
         ],
       });
       compiler.outputFileSystem = fs;

@@ -15,15 +15,17 @@
     "defaultParams": true
   },
   "rules": {
-    // We use the 'import' plugin which allows for cases "flow" awareness.
+    // We use the import plugin which allows for cases flow awareness.
     "no-duplicate-imports": 0,
     // A .jsx extension is not required for files containing jsx.
     "react/jsx-filename-extension": 0,
     // This rule struggles with flow and class properties.
     "react/sort-comp": 0,
-    // Flow annotations on single argument functions break :(
-    "arrow-parens": 0,
-    "camelcase": 0,
-    "no-underscore-dangle": 0
+    // Meh, we do not need this
+    "react/require-default-props": 0,
+    // We use this to indicate private globals
+    "no-underscore-dangle": 0,
+    // We access globals that break this
+    "camelcase": 0    
   }
 }

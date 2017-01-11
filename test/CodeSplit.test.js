@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import Msgs from '../modules/messages';
+import Msgs from '../src/messages';
 
 // Under test.
-import CodeSplit from '../modules/CodeSplit';
+import CodeSplit from '../src/CodeSplit';
 
 describe('CodeSplit', () => {
   // A module stub.

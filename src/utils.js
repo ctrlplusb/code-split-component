@@ -16,7 +16,7 @@ export const es6Safe = (module : any) =>
  */
 export const ensureES6Safe = (x : ResolveModules) => () => {
   const result = x();
-  Object.keys(result).forEach(key => {
+  Object.keys(result).forEach((key) => {
     result[key] = es6Safe(result[key]);
   });
   return result;

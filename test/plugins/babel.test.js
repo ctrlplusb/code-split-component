@@ -1,6 +1,6 @@
 import { transformFileSync } from 'babel-core';
 import { resolve as pathResolve } from 'path';
-import { modulePathHash } from '../../modules/utils';
+import { modulePathHash } from '../../src/utils';
 
 const babelConfig = options => ({
   babelrc: false,
@@ -8,7 +8,7 @@ const babelConfig = options => ({
     'syntax-class-properties',
     'syntax-flow',
     'syntax-jsx',
-    [require('../../modules/plugins/babel'), options || {}],
+    [require('../../src/plugins/babel'), options || {}],
   ],
 });
 
