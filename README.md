@@ -1,3 +1,7 @@
+> __NOTE__: This library is in serious danger of being deprecated in favour of my new [`react-async-component`](https://github.com/ctrlplusb/react-async-component) library that provides a more generic solution that also supports code splitting. It also has no dependency on Webpack or Babel, making it more flexible. The only caveat is that it doesn't support React Hot Loader, although it does support Webpack's default Hot Module Replacement system - if you are using Webpack that is.
+
+-------
+
 # ✂️ code-split-component
 
 Declarative code splitting for your Wepback bundled React projects, with SSR support.
